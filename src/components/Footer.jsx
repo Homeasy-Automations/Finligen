@@ -239,196 +239,189 @@ const Footer = () => {
 
       {/* ───────── ORIGINAL CONTENT ───────── */}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-16 pb-12">
 
         {/* TOP SECTION */}
-        <div className="flex flex-col lg:flex-row justify-between gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 sm:gap-16">
 
-          {/* LEFT SIDE */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-14">
+          {/* Company */}
+          <div>
+            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+              Company
+            </h3>
 
-            {/* Company */}
-            <div>
-              <h3 className="text-black text-[16px] font-semibold mb-5">
-                Company
-              </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/about"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  About Us
+                </Link>
+              </li>
 
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="/about"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    About Us
-                  </Link>
-                </li>
+              <li>
+                <Link
+                  to="/services"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Services
+                </Link>
+              </li>
 
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Services
-                  </Link>
-                </li>
+              <li>
+                <Link
+                  to="/cpa-firms"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  CPA Firms
+                </Link>
+              </li>
 
-                <li>
-                  <Link
-                    to="/cpa-firms"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    CPA Firms
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/contact"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h3 className="text-black text-[16px] font-semibold mb-5">
-                Services
-              </h3>
-
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    LLC Formation
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Sales Tax Compliance
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Offshore Bookkeeping
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/cpa-firms"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    CPA Outsourcing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <h3 className="text-black text-[16px] font-semibold mb-5">
-                Resources
-              </h3>
-
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="/blog"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    FinliGen Blog
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/contact"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Contact Support
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Compliance Guide
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/about"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Partner Network
-                  </Link>
-                </li>
-              </ul>
-            </div>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="flex flex-col items-start lg:items-center">
+          {/* Services */}
+          <div>
+            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+              Services
+            </h3>
 
-            <h1 className="text-[70px] font-semibold leading-none tracking-tight text-[#0d4b52]">
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/services"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  LLC Formation
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/services"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Sales Tax Compliance
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/services"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Offshore Bookkeeping
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/cpa-firms"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  CPA Outsourcing
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+              Resources
+            </h3>
+
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/blog"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  FinliGen Blog
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Contact Support
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/services"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Compliance Guide
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/about"
+                  className="text-gray-500 hover:text-black transition text-[15px]"
+                >
+                  Partner Network
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Brand & Contact Column */}
+          <div className="flex flex-col items-start gap-4">
+            <h1 className="text-[38px] sm:text-[42px] font-semibold leading-none tracking-tight text-[#0d4b52]">
               FINLIGEN
             </h1>
 
-            <p className="text-gray-500 text-[15px] leading-7 mt-2 max-w-[300px] lg:text-center">
+            <p className="text-gray-500 text-[14px] leading-6 max-w-[280px]">
               CA-led tax, bookkeeping, and U.S. compliance solutions for cross-border startups and CPA firms.
             </p>
 
-            <div className="mt-2 lg:text-center">
-              <h3 className="text-black text-[16px] font-semibold mb-1">
+            <div className="space-y-2 mt-2">
+              <h3 className="text-black text-[15px] font-semibold">
                 Get In Touch
               </h3>
 
-              <Link
-                to="mailto:hallo@finligen.com"
-                className="text-gray-500 hover:text-black transition text-[15px] block"
+              <a
+                href="mailto:hello@finligen.com"
+                className="text-gray-500 hover:text-black transition text-[14px] block"
               >
-                hallo@finligen.com
-              </Link>
+                hello@finligen.com
+              </a>
 
-              <div className="flex items-center lg:justify-end gap-3">
-
+              <div className="flex items-center gap-3 pt-2">
                 <Link
                   to="#"
-                  className="w-10 h-10 rounded-full border border-gray-300 hover:bg-black hover:text-white flex items-center justify-center transition"
+                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <AiOutlineLinkedin size={17} />
+                  <AiOutlineLinkedin size={16} />
                 </Link>
 
                 <Link
                   to="#"
-                  className="w-10 h-10 rounded-full border border-gray-300 hover:bg-black hover:text-white flex items-center justify-center transition"
+                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <FaYoutube size={17} />
+                  <FaYoutube size={16} />
                 </Link>
 
                 <Link
                   to="#"
-                  className="w-10 h-10 rounded-full border border-gray-300 hover:bg-black hover:text-white flex items-center justify-center transition"
+                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <FaFacebook size={17} />
+                  <FaFacebook size={16} />
                 </Link>
-
               </div>
             </div>
           </div>

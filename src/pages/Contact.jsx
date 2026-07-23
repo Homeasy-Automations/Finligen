@@ -642,7 +642,7 @@ export default function ContactPage() {
                     <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
                       <FormField
                         label="State / Country of Incorporation"
-                        placeholder="e.g. Delaware, US or India"
+                        placeholder="e.g. Delaware, US"
                         value={formData.country}
                         onChange={(e) =>
                           setFormData({
