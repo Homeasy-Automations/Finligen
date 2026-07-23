@@ -159,7 +159,7 @@ export default function CPAFirmPage() {
                         text-[48px]
                         sm:text-[72px]
                         lg:text-[88px]
-                        leading-[0.92]
+                        leading-[1.08]
                         tracking-[-0.07em]
                         font-semibold"
             >
@@ -613,25 +613,20 @@ export default function CPAFirmPage() {
                         text-[#111]
                         text-[44px]
                         sm:text-[64px]
-                        leading-[0.95]
+                        leading-[1.1]
                         tracking-[-0.06em]
                         font-semibold"
             >
-              Most CPA firm's
-              don’t have a
+              Most CPA firms don’t have a{" "}
               <span className="relative inline-block">
-
-                {" "}demand{" "}
-
+                demand
                 <div
                   className="absolute bottom-2 left-0
                             w-full h-[10px]
                             bg-[#dff5b7]/70
                             -z-10"
                 />
-
-              </span>
-
+              </span>{" "}
               problem.
             </h2>
 
@@ -868,13 +863,11 @@ export default function CPAFirmPage() {
                       text-[#111]
                       text-[46px]
                       sm:text-[72px]
-                      leading-[0.93]
+                      leading-[1.1]
                       tracking-[-0.07em]
                       font-semibold"
           >
-            Most offshore accounting
-            relationships fail for
-            the same reason.
+            Most offshore accounting relationships fail for the same reason.
           </h2>
 
           <p
@@ -1221,26 +1214,21 @@ export default function CPAFirmPage() {
                         text-[#111]
                         text-[48px]
                         sm:text-[70px]
-                        leading-[0.93]
+                        leading-[1.1]
                         tracking-[-0.07em]
                         font-semibold"
             >
-              Your offshore
-              team should
+              Your offshore team should{" "}
               <span className="relative inline-block">
-
-                {" "}reduce stress{" "}
-
+                reduce stress
                 <div
                   className="absolute bottom-2 left-0
                             h-[10px] w-full
                             bg-[#dff5b7]/70
                             -z-10"
                 />
-
-              </span>
-
-              — not create more of it .
+              </span>{" "}
+              — not create more of it.
             </h2>
 
             {/* TEXT */}
@@ -1556,13 +1544,11 @@ export default function CPAFirmPage() {
                       text-white
                       text-[46px]
                       sm:text-[72px]
-                      leading-[0.93]
+                      leading-[1.1]
                       tracking-[-0.07em]
                       font-semibold"
           >
-            Built for firm's that
-            need scalable delivery
-            without sacrificing quality.
+            Built for firms that need scalable delivery without sacrificing quality.
           </h2>
 
         </motion.div>
@@ -1741,23 +1727,23 @@ export default function CPAFirmPage() {
                         text-white
                         text-[32px]
                         sm:text-[40px]
-                        leading-[1]
+                        leading-[1.15]
                         tracking-[-0.05em]
                         font-semibold"
             >
-              We’re built for embedded
-              long-term accounting support.
+              We’re built for embedded long-term accounting support.
             </h3>
 
           </div>
 
           {/* RIGHT */}
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
 
             {[
               "White-Label Ready",
               "Dedicated Teams",
               "US GAAP Trained",
+              "24/48 Hour SLA",
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -1767,9 +1753,10 @@ export default function CPAFirmPage() {
                           rounded-full
                           px-5 py-3
                           text-white/80
-                          text-[14px]"
+                          text-[13px] sm:text-[14px]
+                          text-center flex items-center justify-center gap-1.5"
               >
-                ✓ {item}
+                <span>✓</span> {item}
               </motion.div>
             ))}
 
@@ -1852,13 +1839,11 @@ export default function CPAFirmPage() {
                         text-[#111]
                         text-[46px]
                         sm:text-[72px]
-                        leading-[0.93]
+                        leading-[1.1]
                         tracking-[-0.07em]
                         font-semibold"
             >
-              Everything your
-              firm needs to
-              increase capacity.
+              Everything your firm needs to increase capacity.
             </h2>
 
           </motion.div>
@@ -2097,12 +2082,11 @@ export default function CPAFirmPage() {
                           text-white
                           text-[40px]
                           sm:text-[54px]
-                          leading-[0.95]
+                          leading-[1.1]
                           tracking-[-0.05em]
                           font-semibold"
               >
-                Built like an extension
-                of your internal team.
+                Built like an extension of your internal team.
               </h3>
 
             </div>
@@ -2202,13 +2186,11 @@ export default function CPAFirmPage() {
                         text-[#111]
                         text-[48px]
                         sm:text-[72px]
-                        leading-[0.93]
+                        leading-[1.1]
                         tracking-[-0.07em]
                         font-semibold"
             >
-              Built like an
-              extension of
-              your firm.
+              Built like an extension of your firm.
             </h2>
 
           </motion.div>
@@ -2431,13 +2413,11 @@ export default function CPAFirmPage() {
                           text-white
                           text-[40px]
                           sm:text-[54px]
-                          leading-[0.95]
+                          leading-[1.1]
                           tracking-[-0.05em]
                           font-semibold"
               >
-                Designed for
-                long-term operational
-                support.
+                Designed for long-term operational support.
               </h3>
 
             </div>
@@ -2566,13 +2546,11 @@ export default function CPAFirmPage() {
                         text-white
                         text-[48px]
                         sm:text-[76px]
-                        leading-[0.92]
+                        leading-[1.1]
                         tracking-[-0.07em]
                         font-semibold"
             >
-              Busy season
-              shouldn’t feel
-              like survival mode.
+              Busy season shouldn’t feel like survival mode.
             </h2>
 
             {/* TEXT */}
@@ -2873,13 +2851,11 @@ export default function CPAFirmPage() {
                       text-[#111]
                       text-[48px]
                       sm:text-[72px]
-                      leading-[0.93]
+                      leading-[1.1]
                       tracking-[-0.07em]
                       font-semibold"
           >
-            You get a dedicated
-            team — not random
-            freelancers.
+            You get a dedicated team — not random freelancers.
           </h2>
 
         </motion.div>
@@ -3133,13 +3109,11 @@ export default function CPAFirmPage() {
                           text-white
                           text-[40px]
                           sm:text-[56px]
-                          leading-[0.95]
+                          leading-[1.1]
                           tracking-[-0.05em]
                           font-semibold"
               >
-                Every engagement
-                follows a layered
-                review system.
+                Every engagement follows a layered review system.
               </h3>
 
             </div>
@@ -3248,13 +3222,11 @@ export default function CPAFirmPage() {
                       text-[#111]
                       text-[48px]
                       sm:text-[72px]
-                      leading-[0.93]
+                      leading-[1.1]
                       tracking-[-0.07em]
                       font-semibold"
           >
-            Trusted by firm's
-            that need reliable
-            delivery at scale.
+            Trusted by firms that need reliable delivery at scale.
           </h2>
 
         </motion.div>
@@ -3585,12 +3557,11 @@ export default function CPAFirmPage() {
                       text-[#111]
                       text-[48px]
                       sm:text-[72px]
-                      leading-[0.93]
+                      leading-[1.1]
                       tracking-[-0.07em]
                       font-semibold"
           >
-            Common questions
-            from CPA firm's.
+            Common questions from CPA firms.
           </h2>
 
         </motion.div>
@@ -3797,12 +3768,11 @@ export default function CPAFirmPage() {
                           text-white
                           text-[40px]
                           sm:text-[54px]
-                          leading-[0.95]
+                          leading-[1.1]
                           tracking-[-0.05em]
                           font-semibold"
               >
-                Speak directly with
-                our CPA outsourcing team.
+                Speak directly with our CPA outsourcing team.
               </h3>
 
             </div>
@@ -3942,15 +3912,11 @@ export default function CPAFirmPage() {
                         text-white
                         text-[52px]
                         sm:text-[86px]
-                        leading-[0.9]
+                        leading-[1.1]
                         tracking-[-0.08em]
                         font-semibold"
             >
-              Build your
-              offshore
-              accounting
-              team with
-              FinliGen.
+              Build your offshore accounting team with FinliGen.
             </h2>
 
             {/* TEXT */}

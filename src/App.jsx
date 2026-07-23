@@ -10,6 +10,7 @@ import ServicesPage from "./pages/Services";
 import AboutPage from "./pages/About";
 import Cpa from "./pages/Cpa-firms";
 import Blog from "./pages/FinliGenBlog";
+import BlogPostDetail from "./pages/BlogPostDetail";
 import Contact from "./pages/Contact";
 
 export default function App() {
@@ -23,8 +24,9 @@ export default function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/Cpa-firms" element={<Cpa/>}/>
+        <Route path="/cpa-firms" element={<Cpa/>}/>
         <Route path="/blog" element={<Blog/>}/>
+        <Route path="/blog/:slug" element={<BlogPostDetail />} />
         <Route path="/contact" element={<Contact/>}/>
       </Routes>
 

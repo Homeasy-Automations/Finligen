@@ -1728,8 +1728,8 @@ const Home = () => {
                 className="max-w-[520px] text-[#5f6368] text-[18px] sm:text-[22px]
                             lg:text-[24px] leading-[1.7] font-normal"
               >
-                Manages modern manufacturing operations with efficient
-                technology-enabled systems and scalable production workflows.
+                Manage modern tax and compliance operations with efficient
+                technology-enabled systems and scalable financial workflows.
               </p>
             </motion.div>
           </div>
@@ -1776,12 +1776,12 @@ const Home = () => {
                   className="mt-6 sm:mt-8 text-[#111] text-[22px] sm:text-[28px]
                                leading-tight font-semibold"
                 >
-                  Smart Manufacturing
+                  Smart Bookkeeping
                 </h3>
 
                 <p className="mt-4 sm:mt-6 text-[#666] text-[13px] sm:text-[14px] leading-[1.8]">
-                  Advanced production systems designed for efficiency,
-                  automation, and scalable operations.
+                  Advanced bookkeeping systems designed for speed, automated
+                  reconciliation, and client scalability.
                 </p>
               </div>
 
@@ -1822,12 +1822,12 @@ const Home = () => {
                   className="mt-6 sm:mt-8 text-[#111] text-[22px] sm:text-[28px]
                                leading-tight font-semibold"
                 >
-                  Process Optimization
+                  Tax Optimization
                 </h3>
 
                 <p className="mt-4 sm:mt-6 text-[#666] text-[13px] sm:text-[14px] leading-[1.8]">
-                  Intelligent factory systems helping businesses streamline
-                  operations and reduce production costs.
+                  Intelligent tax planning systems helping businesses streamline
+                  filings and reduce operational overhead.
                 </p>
               </div>
 
@@ -1874,12 +1874,12 @@ const Home = () => {
                   className="mt-5 sm:mt-6 text-[#173c37] text-[22px] sm:text-[28px]
                                leading-tight font-semibold"
                 >
-                  AI-Powered Production
+                  AI-Powered Compliance
                 </h3>
 
                 <p className="mt-4 sm:mt-6 text-[#4d5b57] text-[13px] sm:text-[14px] leading-[1.8]">
-                  Smart automation solutions leveraging AI to improve
-                  manufacturing quality and productivity.
+                  Smart automated workflows leveraging AI to improve
+                  financial reporting accuracy and tax compliance.
                 </p>
               </div>
 
@@ -1923,9 +1923,9 @@ const Home = () => {
               className="mt-3 text-[#050816] text-[28px] sm:text-[38px]
                          md:text-[52px] leading-[1.03] tracking-[-0.05em] font-semibold"
             >
-              One platform for all your
+              One partner for all your
               <br />
-              manufacturing needs
+              tax & compliance needs
             </motion.h2>
 
             <motion.p
@@ -1936,8 +1936,8 @@ const Home = () => {
               className="mt-3 sm:mt-4 text-[#666] text-[13px] sm:text-[14px]
                          leading-[1.7] max-w-[700px] mx-auto"
             >
-              Remove operational friction and streamline your manufacturing
-              workflow with smart automation.
+              Remove compliance overhead and streamline your bookkeeping and tax
+              filings with CA-led experts.
             </motion.p>
           </div>
 
@@ -1955,7 +1955,7 @@ const Home = () => {
                          p-5 relative overflow-hidden"
             >
               <h3 className="text-white text-[28px] sm:text-[36px] leading-[1.05] font-semibold">
-                Grow production
+                Scale business
                 <br />
                 faster
               </h3>
@@ -2036,7 +2036,7 @@ const Home = () => {
                 className="text-[#173c37] text-[32px] sm:text-[46px] lg:text-[60px]
                            leading-[1.05] font-semibold max-w-[650px]"
               >
-                Connect across the global manufacturing network
+                Connect across your global compliance network
               </motion.h3>
 
               {/* Globe Rings */}
@@ -2077,7 +2077,7 @@ const Home = () => {
                 <h4 className="mt-3 sm:mt-4 text-[#111] text-[24px] sm:text-[32px] font-semibold">
                   $25,000
                 </h4>
-                <p className="text-[#666] text-[13px] sm:text-[16px]">Manufacturing Process</p>
+                <p className="text-[#666] text-[13px] sm:text-[16px]">Books Reconciled</p>
 
                 <div className="flex items-center mt-3 sm:mt-5">
                   {[
@@ -2108,7 +2108,7 @@ const Home = () => {
               >
                 <h4 className="text-[30px] sm:text-[38px] font-semibold">$40,000</h4>
                 <p className="mt-1 text-white/80 text-[13px] sm:text-[15px]">
-                  Production Completed
+                  IRS Filings Completed
                 </p>
                 <div className="absolute -bottom-4 left-8 w-0 h-0
                                 border-l-[16px] border-r-[16px] border-t-[18px]

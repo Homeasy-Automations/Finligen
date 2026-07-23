@@ -250,10 +250,12 @@ function FormField({
           className="w-full px-3 py-2.5 rounded-lg border-2 text-sm font-medium text-gray-900 bg-white/70 cursor-pointer transition-colors focus:outline-none"
         >
           <option value="">Select service...</option>
+          <option value="llc-starter">US LLC Setup - Starter Package ($397 + State Fee)</option>
+          <option value="llc-standard">US LLC Setup - Standard Package ($597 + State Fee)</option>
+          <option value="llc-revenue">Registration-to-Revenue™ Package ($1797 + State Fee)</option>
           <option value="us-tax">US Sales Tax Compliance</option>
           <option value="bookkeeping">Offshore Bookkeeping</option>
           <option value="cpa-outsourcing">CPA Firm Outsourcing</option>
-          <option value="llc-setup">US LLC Setup & Advisory</option>
           <option value="vcfo">Virtual CFO Services</option>
           <option value="cross-border">Cross-Border Compliance</option>
           <option value="other">Other</option>
@@ -308,7 +310,9 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     company: "",
+    country: "",
     service: "",
     message: "",
     agreed: false,
@@ -338,9 +342,11 @@ export default function ContactPage() {
     if (!formData.email.trim()) newErrors.email = "Email required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Invalid email";
+    if (!formData.phone.trim()) newErrors.phone = "Phone required";
     if (!formData.company.trim()) newErrors.company = "Company required";
+    if (!formData.country.trim()) newErrors.country = "Country/State required";
     if (!formData.message.trim()) newErrors.message = "Message required";
-    if (!formData.agreed) newErrors.agreed = "Please agree";
+    if (!formData.agreed) newErrors.agreed = "Please agree to the privacy terms";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -354,7 +360,9 @@ export default function ContactPage() {
     setFormData({
       name: "",
       email: "",
+      phone: "",
       company: "",
+      country: "",
       service: "",
       message: "",
       agreed: false,
@@ -596,11 +604,27 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    {/* Company & Service Row */}
+                    {/* Phone & Company Row */}
                     <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
                       <FormField
+                        label="Phone Number"
+                        type="tel"
+                        placeholder="+1 (555) 000-0000"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            phone: e.target.value,
+                          })
+                        }
+                        error={errors.phone}
+                        required
+                        isMobile={isMobile}
+                      />
+
+                      <FormField
                         label="Company Name"
-                        placeholder="Your company"
+                        placeholder="Your company name"
                         value={formData.company}
                         onChange={(e) =>
                           setFormData({
@@ -609,6 +633,24 @@ export default function ContactPage() {
                           })
                         }
                         error={errors.company}
+                        required
+                        isMobile={isMobile}
+                      />
+                    </div>
+
+                    {/* Country & Service Row */}
+                    <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
+                      <FormField
+                        label="State / Country of Incorporation"
+                        placeholder="e.g. Delaware, US or India"
+                        value={formData.country}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            country: e.target.value,
+                          })
+                        }
+                        error={errors.country}
                         required
                         isMobile={isMobile}
                       />

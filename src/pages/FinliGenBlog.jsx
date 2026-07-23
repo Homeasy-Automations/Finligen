@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import BlogSEO from "../seo/BlogSEO";
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const FINLIGEN_BLOG_DATA = [
+export const FINLIGEN_BLOG_DATA = [
   {
     _id: "1",
     title: "US Sales Tax Nexus: The 6-Figure Mistake Most Foreign Founders Don't See Coming",

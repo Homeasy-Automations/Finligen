@@ -256,7 +256,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li>
                   <Link
-                    to="/"
+                    to="/about"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
                     About Us
@@ -265,118 +265,118 @@ const Footer = () => {
 
                 <li>
                   <Link
-                    to="/test"
+                    to="/services"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Customers
+                    Services
                   </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="#"
+                    to="/cpa-firms"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Newsroom
+                    CPA Firms
                   </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="#"
+                    to="/contact"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Events
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Industries */}
-            <div>
-              <h3 className="text-black text-[16px] font-semibold mb-5">
-                Industries
-              </h3>
-
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Precision Metalforming
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Industrial Manufacturing
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    High Tec & Electronics
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-500 hover:text-black transition text-[15px]"
-                  >
-                    Aerospace
+                    Contact Us
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Products */}
+            {/* Services */}
             <div>
               <h3 className="text-black text-[16px] font-semibold mb-5">
-                Products
+                Services
               </h3>
 
               <ul className="space-y-3">
                 <li>
                   <Link
-                    to="#"
+                    to="/services"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Manufacturing Execution System
+                    LLC Formation
                   </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="#"
+                    to="/services"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Enterprise Resource Planning
+                    Sales Tax Compliance
                   </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="#"
+                    to="/services"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Quality Management System
+                    Offshore Bookkeeping
                   </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="#"
+                    to="/cpa-firms"
                     className="text-gray-500 hover:text-black transition text-[15px]"
                   >
-                    Supply Chain Planning
+                    CPA Outsourcing
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h3 className="text-black text-[16px] font-semibold mb-5">
+                Resources
+              </h3>
+
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    to="/blog"
+                    className="text-gray-500 hover:text-black transition text-[15px]"
+                  >
+                    FinliGen Blog
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/contact"
+                    className="text-gray-500 hover:text-black transition text-[15px]"
+                  >
+                    Contact Support
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/services"
+                    className="text-gray-500 hover:text-black transition text-[15px]"
+                  >
+                    Compliance Guide
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/about"
+                    className="text-gray-500 hover:text-black transition text-[15px]"
+                  >
+                    Partner Network
                   </Link>
                 </li>
               </ul>
@@ -391,8 +391,7 @@ const Footer = () => {
             </h1>
 
             <p className="text-gray-500 text-[15px] leading-7 mt-2 max-w-[300px] lg:text-center">
-              Our solutions make production faster and cheaper.
-              Contact us for more information.
+              CA-led tax, bookkeeping, and U.S. compliance solutions for cross-border startups and CPA firms.
             </p>
 
             <div className="mt-2 lg:text-center">

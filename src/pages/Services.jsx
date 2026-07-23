@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ServicesSEO from "../seo/ServicesSEO";
 import {
@@ -18,9 +18,12 @@ import {
   AiOutlineDollar,
   AiOutlineLeft,
   AiOutlineRight,
+  AiOutlineSearch,
+  AiOutlineQuestionCircle,
+  AiOutlineCalculator,
 } from "react-icons/ai";
 import { TbStack, TbNorthStar, TbChevronDown, TbHomeQuestion } from "react-icons/tb";
-import { LuShieldHalf } from "react-icons/lu";
+import { LuShieldHalf, LuTrendingUp, LuDollarSign, LuSettings, LuLayers } from "react-icons/lu";
 import { TiSpannerOutline } from "react-icons/ti";
 import { IoCubeOutline } from "react-icons/io5";
 import {
@@ -28,18 +31,7 @@ import {
   HiOutlineLightBulb,
   HiOutlineChartBar,
 } from "react-icons/hi";
-import { FiCheck, FiArrowUpRight } from "react-icons/fi";
-
-/* ─── Animation Variants ──────────────────────────────────────── */
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+import { FiCheck, FiArrowUpRight, FiSearch, FiHelpCircle, FiChevronRight } from "react-icons/fi";
 
 /* ─── Services Data ───────────────────────────────────────────── */
 const services = [
@@ -47,12 +39,9 @@ const services = [
     icon: <AiOutlineLineChart size={28} />,
     badge: "Most Popular",
     title: "US Tax & Sales Tax Compliance",
-    headline:
-      "Stop Losing Sleep Over US Sales Tax. We've Got Every State Covered.",
-    shortDesc:
-      "Nexus analysis, multi-state registration, monthly filings, and IRS return preparation — every state, every deadline.",
-    fullDesc:
-      "US sales tax is the #1 compliance risk for foreign-owned businesses and ecommerce brands. With 45 states levying sales tax — each with different nexus rules, rates, and filing schedules — the margin for error is razor thin. FinliGen's dedicated sales tax practice handles nexus analysis, registration in required states, monthly or quarterly return preparation, and amendment filing. We also manage your IRS income tax returns and work directly with your US CPA on account finalization.",
+    headline: "Stop Losing Sleep Over US Sales Tax. We've Got Every State Covered.",
+    shortDesc: "Nexus analysis, multi-state registration, monthly filings, and IRS return preparation — every state, every deadline.",
+    fullDesc: "US sales tax is the #1 compliance risk for foreign-owned businesses and ecommerce brands. With 45 states levying sales tax — each with different nexus rules, rates, and filing schedules — the margin for error is razor thin. FinliGen's dedicated sales tax practice handles nexus analysis, registration in required states, monthly or quarterly return preparation, and amendment filing. We also manage your IRS income tax returns and work directly with your US CPA on account finalization.",
     features: [
       "Nexus Analysis",
       "Sales Tax Registration (all 50 states)",
@@ -73,14 +62,11 @@ const services = [
   },
   {
     icon: <TbStack size={28} />,
-    badge: null,
+    badge: "For Accounting Firms",
     title: "CPA Firm Outsourcing",
-    headline:
-      "Your CPA Firm's Invisible Back-Office. Deadline-Driven. CA-Reviewed.",
-    shortDesc:
-      "CA-reviewed bookkeeping, workpaper prep, and tax return drafts delivered white-label to your US CPA firm.",
-    fullDesc:
-      "Busy season doesn't have to break your practice. FinliGen works as an extension of your US CPA firm — delivering client-ready bookkeeping, account finalization, workpaper preparation, and tax return drafts, all at offshore cost structures without offshore quality risk.",
+    headline: "Your CPA Firm's Invisible Back-Office. Deadline-Driven. CA-Reviewed.",
+    shortDesc: "CA-reviewed bookkeeping, workpaper prep, and tax return drafts delivered white-label to your US CPA firm.",
+    fullDesc: "Busy season doesn't have to break your practice. FinliGen works as an extension of your US CPA firm — delivering client-ready bookkeeping, account finalization, workpaper preparation, and tax return drafts, all at offshore cost structures without offshore quality risk.",
     features: [
       "Client Bookkeeping (QuickBooks / Xero)",
       "Account Finalization & Workpapers",
@@ -101,13 +87,11 @@ const services = [
   },
   {
     icon: <LuShieldHalf size={28} />,
-    badge: null,
+    badge: "Startups & Launch",
     title: "US LLC Setup & Advisory",
     headline: "Your US Business Entity. Set Up Right from Day One.",
-    shortDesc:
-      "LLC or C-Corp formation, EIN registration, operating agreements, and first-year compliance for non-US founders.",
-    fullDesc:
-      "Thousands of international founders are entering the US market every year — and most get the legal and compliance setup wrong. FinliGen guides you through LLC or C-Corp formation in your optimal state, EIN application, registered agent setup, operating agreement drafting, and the first-year compliance calendar.",
+    shortDesc: "LLC or C-Corp formation, EIN registration, operating agreements, and first-year compliance for non-US founders.",
+    fullDesc: "Thousands of international founders are entering the US market every year — and most get the legal and compliance setup wrong. FinliGen guides you through LLC or C-Corp formation in your optimal state, EIN application, registered agent setup, operating agreement drafting, and the first-year compliance calendar.",
     features: [
       "LLC / C-Corp Formation",
       "EIN Application & ITIN Support",
@@ -128,13 +112,11 @@ const services = [
   },
   {
     icon: <TbNorthStar size={28} />,
-    badge: null,
+    badge: "Monthly Operations",
     title: "Offshore Bookkeeping",
     headline: "Books Clean. Closed by the 15th. Every Month.",
-    shortDesc:
-      "Daily transaction recording, bank reconciliation, and monthly MIS reports — books clean and closed by the 15th.",
-    fullDesc:
-      "Our offshore bookkeeping service ensures your financial records are always accurate, up-to-date, and audit-ready. We handle daily transaction recording, categorization, bank and credit card reconciliation, vendor bill management, and monthly MIS reporting.",
+    shortDesc: "Daily transaction recording, bank reconciliation, and monthly MIS reports — books clean and closed by the 15th.",
+    fullDesc: "Our offshore bookkeeping service ensures your financial records are always accurate, up-to-date, and audit-ready. We handle daily transaction recording, categorization, bank and credit card reconciliation, vendor bill management, and monthly MIS reporting.",
     features: [
       "Daily Transaction Recording",
       "Bank & CC Reconciliation",
@@ -155,13 +137,11 @@ const services = [
   },
   {
     icon: <TiSpannerOutline size={28} />,
-    badge: null,
+    badge: "Strategic Finance",
     title: "Virtual CFO Services",
     headline: "CFO-Level Financial Strategy. Without the Full-Time Price Tag.",
-    shortDesc:
-      "Strategic financial oversight, cash flow planning, investor-ready reporting, and board-level advisory.",
-    fullDesc:
-      "Get the strategic financial leadership your business needs without hiring a full-time CFO. Our Virtual CFO service includes cash flow forecasting, budget vs actuals analysis, investor-ready financial reporting, KPI dashboards, fundraising support, and board-level financial advisory.",
+    shortDesc: "Strategic financial oversight, cash flow planning, investor-ready reporting, and board-level advisory.",
+    fullDesc: "Get the strategic financial leadership your business needs without hiring a full-time CFO. Our Virtual CFO service includes cash flow forecasting, budget vs actuals analysis, investor-ready financial reporting, KPI dashboards, fundraising support, and board-level financial advisory.",
     features: [
       "Cash Flow Forecasting",
       "Budget vs Actuals Analysis",
@@ -182,13 +162,11 @@ const services = [
   },
   {
     icon: <IoCubeOutline size={28} />,
-    badge: null,
+    badge: "Global Growth",
     title: "Cross-Border Tax Advisory",
     headline: "India–US Tax Structuring That Actually Saves You Money.",
-    shortDesc:
-      "FEMA compliance, transfer pricing, DTAA planning, and India–US tax structuring for founders and growing companies.",
-    fullDesc:
-      "Operating between India and the US creates complex tax obligations. Our cross-border advisory covers FEMA compliance for outward/inward remittances, transfer pricing documentation, DTAA benefit optimization, and India-US entity structuring.",
+    shortDesc: "FEMA compliance, transfer pricing, DTAA planning, and India–US tax structuring for founders and growing companies.",
+    fullDesc: "Operating between India and the US creates complex tax obligations. Our cross-border advisory covers FEMA compliance for outward/inward remittances, transfer pricing documentation, DTAA benefit optimization, and India-US entity structuring.",
     features: [
       "FEMA Compliance & Reporting",
       "Transfer Pricing Documentation",
@@ -264,26 +242,32 @@ const stats = [
 /* ─── FAQs ────────────────────────────────────────────────────── */
 const faqs = [
   {
+    category: "Onboarding",
     q: "How quickly can you start working on our accounts?",
     a: "We typically onboard new clients within 3-5 business days. After the discovery call and proposal approval, we set up system access and assign your dedicated team immediately.",
   },
   {
+    category: "Software",
     q: "Do you work with specific accounting software?",
     a: "Yes — we're proficient in QuickBooks Online, Xero, FreshBooks, Wave, Zoho Books, and most major accounting platforms. If you use a different tool, we'll adapt.",
   },
   {
+    category: "Cross-Border",
     q: "What if we need services across both India and the US?",
     a: "That's our specialty. Our cross-border advisory is designed specifically for businesses operating in both countries. We handle compliance on both sides.",
   },
   {
+    category: "Security",
     q: "How do you ensure data security?",
     a: "We use encrypted file sharing, role-based access controls, NDA-protected teams, and SOC 2 compliant infrastructure. Your data never leaves secure channels.",
   },
   {
+    category: "Outsourcing",
     q: "Can you work as a white-label partner for our CPA firm?",
     a: "Absolutely. Our CPA Firm Outsourcing service is designed exactly for this. Your clients will never know about us — we deliver everything under your brand.",
   },
   {
+    category: "Pricing",
     q: "What are your pricing models?",
     a: "We offer fixed monthly pricing based on scope — no hourly billing, no surprises. You'll know exactly what you pay before we start.",
   },
@@ -314,9 +298,176 @@ const testimonials = [
 /* ─── Auto-slide config ───────────────────────────────────────── */
 const AUTO_SLIDE_MS = 6000;
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN COMPONENT
-   ═══════════════════════════════════════════════════════════════ */
+/* ─── Quiz Questions & Logic ──────────────────────────────────── */
+const QUIZ_STEPS = [
+  {
+    id: "businessType",
+    question: "What is your primary operating structure?",
+    options: [
+      { value: "ecommerce_saas", label: "Ecommerce Brand or SaaS Startup", desc: "Selling digital/physical goods, requires sales tax compliance." },
+      { value: "cpa_firm", label: "US CPA Firm", desc: "Looking to outsource bookkeeping and tax preparation workloads." },
+      { value: "non_us_founder", label: "Non-US Founder / LLC Setup", desc: "Setting up a legal US entity and establishing banking remotely." },
+      { value: "cross_border", label: "Cross-Border Company", desc: "Operating in both India and the US; needs transfer pricing advisory." }
+    ]
+  },
+  {
+    id: "mainChallenge",
+    question: "What is your most critical tax or accounting challenge?",
+    options: [
+      { value: "sales_tax", label: "Multi-State Sales Tax & Nexus", desc: "Registering in states, filing monthly/quarterly returns correctly." },
+      { value: "bookkeeping", label: "Late / Messy Monthly Closings", desc: "Need transactions reconciled and MIS reports closed by the 15th." },
+      { value: "advisory", label: "Cross-Border Structuring & FEMA", desc: "Avoiding double taxation and ensuring strict regulatory compliance." },
+      { value: "scalability", label: "Hiring High-Cost US Accounting Staff", desc: "Seeking CA-reviewed teams to scale capacities white-label." }
+    ]
+  }
+];
+
+/* ─── State Filing Fees Data ────────────────────────────────────── */
+const STATE_FEES = {
+  AL: { name: "Alabama", fee: 183 },
+  AK: { name: "Alaska", fee: 250 },
+  AZ: { name: "Arizona", fee: 50 },
+  AR: { name: "Arkansas", fee: 45 },
+  CA: { name: "California", fee: 70 },
+  CO: { name: "Colorado", fee: 50 },
+  CT: { name: "Connecticut", fee: 185 },
+  DE: { name: "Delaware", fee: 90 },
+  DC: { name: "District of Columbia", fee: 220 },
+  FL: { name: "Florida", fee: 125 },
+  GA: { name: "Georgia", fee: 100 },
+  HI: { name: "Hawaii", fee: 51 },
+  ID: { name: "Idaho", fee: 100 },
+  IL: { name: "Illinois", fee: 150 },
+  IN: { name: "Indiana", fee: 91 },
+  IA: { name: "Iowa", fee: 50 },
+  KS: { name: "Kansas", fee: 165 },
+  KY: { name: "Kentucky", fee: 90 },
+  LA: { name: "Louisiana", fee: 105 },
+  ME: { name: "Maine", fee: 175 },
+  MD: { name: "Maryland", fee: 125 },
+  MA: { name: "Massachusetts", fee: 520 },
+  MI: { name: "Michigan", fee: 60 },
+  MN: { name: "Minnesota", fee: 155 },
+  MS: { name: "Mississippi", fee: 52 },
+  MO: { name: "Missouri", fee: 52 },
+  MT: { name: "Montana", fee: 70 },
+  NE: { name: "Nebraska", fee: 109 },
+  NV: { name: "Nevada", fee: 75 },
+  NH: { name: "New Hampshire", fee: 100 },
+  NJ: { name: "New Jersey", fee: 130 },
+  NM: { name: "New Mexico", fee: 50 },
+  NY: { name: "New York", fee: 200 },
+  NC: { name: "North Carolina", fee: 127 },
+  ND: { name: "North Dakota", fee: 135 },
+  OH: { name: "Ohio", fee: 99 },
+  OK: { name: "Oklahoma", fee: 104 },
+  OR: { name: "Oregon", fee: 100 },
+  PA: { name: "Pennsylvania", fee: 125 },
+  RI: { name: "Rhode Island", fee: 156 },
+  SC: { name: "South Carolina", fee: 110 },
+  SD: { name: "South Dakota", fee: 150 },
+  TN: { name: "Tennessee", fee: 309 },
+  TX: { name: "Texas", fee: 300 },
+  UT: { name: "Utah", fee: 76 },
+  VT: { name: "Vermont", fee: 125 },
+  VA: { name: "Virginia", fee: 103 },
+  WA: { name: "Washington", fee: 180 },
+  WV: { name: "West Virginia", fee: 100 },
+  WI: { name: "Wisconsin", fee: 130 },
+  WY: { name: "Wyoming", fee: 102 }
+};
+
+/* ─── Service Packages Data ────────────────────────────────────── */
+const pricingPackages = [
+  {
+    name: "Starter",
+    basePrice: 397,
+    subtitle: "Budget-friendly U.S. LLC setup",
+    features: [
+      "Company Registration (Articles of Organization)",
+      "EIN from IRS (No SSN Required)",
+      "BOI Filing (FinCEN Compliant)",
+      "1-Year Registered Agent Service",
+      "1-Year U.S. Business Address & Mail Forwarding",
+      "Custom Operating Agreement",
+      "Client Dashboard Access",
+      "Email, Call & WhatsApp Support",
+    ],
+    ctaText: "Start My Business",
+    popular: false,
+    accentColor: "#7ecfc0",
+  },
+  {
+    name: "Standard",
+    basePrice: 597,
+    subtitle: "Starter + Compliance & Bank Support",
+    features: [
+      "All features in Starter package included",
+      "Bank Account Setup Guidance (Mercury, Wise)",
+      "Annual State Report Filing & Tax Reminders",
+      "Sales Tax ID Registration & Reseller Permit Help",
+      "Stripe / PayPal Document Pack & Verification Help",
+      "1-Year Registered Agent Renewal Tracking",
+      "Priority Dashboard Access & Document Safe",
+      "Priority Call, Email & WhatsApp Support",
+    ],
+    ctaText: "Get Started Now",
+    popular: true,
+    accentColor: "#dff5b7",
+  },
+  {
+    name: "Registration-to-Revenue™",
+    basePrice: 1797,
+    subtitle: "Standard + CPA Tax Support & Reviews",
+    features: [
+      "All features in Standard package included",
+      "CPA-Prepared Tax Filing (Forms 1120 & 5472)",
+      "CPA Review of Entity Compliance & Structure",
+      "IRS Notice Handling & Direct Representative Support",
+      "BOI Re-filing Support (in case of ownership changes)",
+      "Business Bank Docs Pack (Certified Copies)",
+      "Dedicated CPA Email, Phone & Consultation Line",
+      "Monthly Bookkeeping Setup (Add-on Integrated)",
+    ],
+    ctaText: "Get Full CPA Support",
+    popular: false,
+    accentColor: "#7ecfc0",
+  },
+];
+
+const separateAddons = [
+  {
+    title: "ITIN Application",
+    price: "$250 Flat",
+    desc: "Includes Certified Acceptance Agent (CAA) verification, passport processing, IRS submission, and secure international courier.",
+  },
+  {
+    title: "Sales Tax Permit",
+    price: "From $100",
+    desc: "Get your resale certificate and sales tax ID — essential for Amazon, Shopify, dropshipping, and retail sellers.",
+  },
+  {
+    title: "Annual Report Filing",
+    price: "From $150",
+    desc: "Includes state report preparation, fee payment, compliance check, and official confirmation to keep your LLC in good standing.",
+  },
+  {
+    title: "IRS Tax Filing (1120 & 5472)",
+    price: "Starting From $200",
+    desc: "Annual federal return preparation and filing for foreign-owned single-member LLCs, reviewed by a U.S. CPA.",
+  },
+  {
+    title: "LLC Closure (Dissolution)",
+    price: "From $150 + Penalty",
+    desc: "Formally dissolve your LLC with the state to avoid ongoing annual fees, franchise taxes, and compliance notices.",
+  },
+  {
+    title: "Registered Agent Renewal",
+    price: "Starting From $50/year",
+    desc: "Renew your registered agent service to maintain a legal physical address in your state of formation.",
+  },
+];
+
 export default function ServicesPage() {
   const [openFaq, setOpenFaq] = useState(null);
   const [activeService, setActiveService] = useState(0);
@@ -324,7 +475,27 @@ export default function ServicesPage() {
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
-  React.useEffect(() => {
+  // ROI Calculator States
+  const [calculatorService, setCalculatorService] = useState("US Tax & Sales Tax Compliance");
+  const [revenue, setRevenue] = useState(500000); // Slider value
+
+  // Quiz Advisor States
+  const [quizStep, setQuizStep] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState({ businessType: "", mainChallenge: "" });
+  const [quizResult, setQuizResult] = useState(null);
+
+  // FAQ Search States
+  const [faqSearch, setFaqSearch] = useState("");
+  const [faqCategory, setFaqCategory] = useState("All");
+
+  // Hero interactive state
+  const [dashboardTab, setDashboardTab] = useState("compliance");
+  const [hoveredMetric, setHoveredMetric] = useState(null);
+
+  // Selected State for U.S. LLC Pricing (All 50 states mapped)
+  const [selectedState, setSelectedState] = useState("WY");
+
+  useEffect(() => {
     document.title = "Accounting & Compliance Services — FinliGen";
   }, []);
 
@@ -381,113 +552,215 @@ export default function ServicesPage() {
 
   const current = services[activeService];
 
+  // ROI Calculator Math
+  const calculatedSavings = useMemo(() => {
+    let usCost = 0;
+    if (calculatorService === "US Tax & Sales Tax Compliance") {
+      usCost = 35000 + (revenue * 0.015);
+    } else if (calculatorService === "CPA Firm Outsourcing") {
+      usCost = 90000 + (revenue * 0.025);
+    } else if (calculatorService === "US LLC Setup & Advisory") {
+      usCost = 15000 + (revenue * 0.008);
+    } else if (calculatorService === "Offshore Bookkeeping") {
+      usCost = 45000 + (revenue * 0.012);
+    } else if (calculatorService === "Virtual CFO Services") {
+      usCost = 160000 + (revenue * 0.03);
+    } else {
+      usCost = 75000 + (revenue * 0.02);
+    }
+
+    const finligenCost = usCost * 0.35; // 65% cost savings
+    const annualSavings = usCost - finligenCost;
+    const monthlySavings = annualSavings / 12;
+
+    return {
+      usCost: Math.round(usCost),
+      finligenCost: Math.round(finligenCost),
+      annualSavings: Math.round(annualSavings),
+      monthlySavings: Math.round(monthlySavings),
+      roiMultiplier: ((annualSavings / finligenCost) + 1).toFixed(1)
+    };
+  }, [calculatorService, revenue]);
+
+  // Quiz Advisor Evaluator
+  const handleQuizAnswer = (optionValue) => {
+    const currentQuestionId = QUIZ_STEPS[quizStep].id;
+    const updatedAnswers = { ...quizAnswers, [currentQuestionId]: optionValue };
+    setQuizAnswers(updatedAnswers);
+
+    if (quizStep < QUIZ_STEPS.length - 1) {
+      setQuizStep(quizStep + 1);
+    } else {
+      // Evaluate result
+      let recommended = [];
+      let reasoning = "";
+      let checklist = [];
+
+      const { businessType, mainChallenge } = updatedAnswers;
+
+      if (businessType === "ecommerce_saas") {
+        recommended = [services[0], services[3]]; // US Tax + Bookkeeping
+        reasoning = "For Ecommerce and SaaS, sales tax nexus is triggered automatically as transactions grow across states. Keeping clean, reconciled books is vital to claim R&D credits and prepare for IRS compliance.";
+        checklist = [
+          "Establish multi-state economic nexus thresholds.",
+          "Automate sales tax calculations and clean bookkeeping syncs.",
+          "Prepare for annual IRS returns and local state filings."
+        ];
+      } else if (businessType === "cpa_firm") {
+        recommended = [services[1], services[3]]; // CPA Outsourcing + Bookkeeping
+        reasoning = "You need white-label back-office scalability. By leveraging dedicated, CA-reviewed offshore resources, you save 60% compared to local staff during busy seasons.";
+        checklist = [
+          "Deploy a dedicated workpaper prep team.",
+          "Establish daily transaction reconciliations via QBO/Xero.",
+          "Set up standard operating procedures for white-label delivery."
+        ];
+      } else if (businessType === "non_us_founder") {
+        recommended = [services[2], services[5]]; // US LLC Setup + Cross-Border
+        reasoning = "Launching a US branch requires state registration, EIN retrieval, registered agents, and strict cross-border structuring to avoid double taxation on overseas profits.";
+        checklist = [
+          "Incorporate in tax-favorable states like Delaware or Wyoming.",
+          "Apply for IRS EIN / ITIN and set up remote business banking.",
+          "Formulate DTAA (Double Tax Avoidance Agreement) strategies."
+        ];
+      } else {
+        recommended = [services[5], services[4]]; // Cross-Border + Virtual CFO
+        reasoning = "Operating across the India-US corridor triggers complex FEMA compliance, transfer pricing rules, and FTC issues. You require high-level tax advice and strategic cash flow forecasting.";
+        checklist = [
+          "Complete transfer pricing documentation and agreements.",
+          "Ensure FEMA compliance on inward/outward fund remittances.",
+          "Deploy custom KPI dashboards to monitor cash runways."
+        ];
+      }
+
+      setQuizResult({ recommended, reasoning, checklist });
+      setQuizStep(3); // Result step
+    }
+  };
+
+  const resetQuiz = () => {
+    setQuizStep(0);
+    setQuizAnswers({ businessType: "", mainChallenge: "" });
+    setQuizResult(null);
+  };
+
+  // FAQ Categories
+  const categories = ["All", "Onboarding", "Software", "Cross-Border", "Security", "Outsourcing", "Pricing"];
+
+  // Filtered FAQs
+  const filteredFaqs = useMemo(() => {
+    return faqs.filter((faq) => {
+      const matchSearch = faq.q.toLowerCase().includes(faqSearch.toLowerCase()) || 
+                          faq.a.toLowerCase().includes(faqSearch.toLowerCase());
+      const matchCategory = faqCategory === "All" || faq.category === faqCategory;
+      return matchSearch && matchCategory;
+    });
+  }, [faqSearch, faqCategory]);
+
   return (
-    <main className="bg-white min-h-screen overflow-x-hidden">
+    <main className="bg-[#FAF9F6] min-h-screen overflow-x-hidden text-[#0B0B0C]">
       <ServicesSEO />
+      
+      {/* ─── GLOWING DECORATIVE BACKGROUNDS ─── */}
+      <div className="absolute top-0 left-1/4 w-[40rem] h-[40rem] bg-gradient-to-br from-[#7ecfc0]/10 to-[#dff5b7]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute top-[80vh] right-1/4 w-[35rem] h-[35rem] bg-gradient-to-br from-[#06363c]/5 to-[#7ecfc0]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 1 — HERO
+          SECTION 1 — HERO SECTION
       ═══════════════════════════════════════════════════════════ */}
-      <section className="relative w-full min-h-[70vh] sm:min-h-[75vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden bg-white">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center">
+      <section className="relative w-full py-16 lg:py-28 flex items-center justify-center">
+        <div className="w-full max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
             {/* LEFT — Content */}
-            <div className="relative z-10 text-center lg:text-left">
+            <div className="lg:col-span-6 relative z-10 text-center lg:text-left">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="mb-5 sm:mb-6"
+                transition={{ duration: 0.5 }}
+                className="mb-6 inline-flex"
               >
-                <span className="inline-flex items-center gap-2 text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase border border-[#06363c]/30 rounded-full px-4 sm:px-5 py-1.5 sm:py-2 bg-[#06363c]/5">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#06363c] rounded-full animate-pulse" />
-                  OUR SERVICES
+                <span className="inline-flex items-center gap-2 text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+                  <span className="w-2 h-2 bg-[#7ecfc0] rounded-full animate-ping" />
+                  FINANCIAL EXCELLENCE
                 </span>
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.3,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="text-[#0a0a0a] text-[26px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[60px] font-bold leading-[1.1] tracking-tight"
+                transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
+                className="text-[34px] sm:text-[44px] md:text-[54px] lg:text-[58px] xl:text-[66px] font-display font-bold leading-[1.08] tracking-tight text-[#0a0a0a]"
               >
-                Every Service Your
-                <br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>
-                Finance Function Needs.{" "}
-                <span className="text-[#06363c]">
-                  <br className="hidden md:block" />
-                  One Trusted Partner.
+                Simplify Compliance.
+                <br />
+                <span className="bg-gradient-to-r from-[#06363c] via-[#0c3b42] to-[#7ecfc0] bg-clip-text text-transparent">
+                  Accelerate Growth.
                 </span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5 }}
-                className="mt-4 sm:mt-6 text-[#6b7280] text-[13px] sm:text-[16px] md:text-[18px] leading-[1.7] max-w-2xl mx-auto lg:mx-0"
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="mt-6 text-gray-600 text-base sm:text-lg leading-[1.7] max-w-xl mx-auto lg:mx-0 font-body"
               >
-                From daily bookkeeping to complex cross-border compliance —
-                FinliGen provides end-to-end financial services for businesses
-                operating between{" "}
-                <span className="text-[#0a0a0a] font-medium">India</span> and
-                the{" "}
-                <span className="text-[#0a0a0a] font-medium">
-                  United States
-                </span>
-                .
+                End-to-end bookkeeping, multi-state tax filing, and CFO advisory tailored specifically for high-growth businesses operating in the <span className="text-[#06363c] font-semibold">India–US business corridor</span>.
               </motion.p>
 
+              {/* Action Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.7 }}
-                className="mt-6 sm:mt-8 lg:mt-10 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-3 sm:gap-4"
+                transition={{ duration: 0.6, delay: 0.25 }}
+                className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
               >
                 <motion.a
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   href="/contact"
-                  className="w-full sm:w-auto bg-[#06363c] hover:bg-[#052f35] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-[13px] sm:text-[15px] font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-[#06363c]/20"
+                  className="w-full sm:w-auto bg-[#06363c] hover:bg-[#042024] text-white px-8 py-4 rounded-full text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-xl shadow-[#06363c]/15"
                 >
                   Book Free Consultation
                   <AiOutlineArrowRight size={16} />
                 </motion.a>
 
                 <motion.a
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  href="#services-grid"
-                  className="w-full sm:w-auto border border-[#06363c]/20 hover:border-[#06363c]/50 text-[#06363c] px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-[13px] sm:text-[15px] font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="#services-quiz"
+                  className="w-full sm:w-auto border border-[#06363c]/20 hover:border-[#06363c]/50 text-[#06363c] px-8 py-4 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:bg-white bg-white/40 backdrop-blur-sm"
                 >
-                  Explore Services
-                  <TbChevronDown size={16} />
+                  Find Your Service
+                  <FiChevronRight size={16} className="text-[#06363c]" />
                 </motion.a>
               </motion.div>
 
+              {/* Hero Stats */}
               <motion.div
                 initial="hidden"
                 animate="visible"
-                variants={staggerContainer}
-                className="mt-8 sm:mt-12 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+                }}
+                className="mt-12 pt-8 border-t border-gray-200/80 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center lg:text-left"
               >
                 {stats.map((stat, i) => (
                   <motion.div
                     key={i}
-                    variants={fadeUp}
-                    transition={{ duration: 0.5 }}
-                    className="text-center lg:text-left"
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      visible: { opacity: 1, y: 0 }
+                    }}
+                    className="group"
                   >
-                    <div className="flex items-center justify-center lg:justify-start gap-1.5 sm:gap-2 mb-1">
-                      <span className="text-[#06363c]">{stat.icon}</span>
-                      <span className="text-[#0a0a0a] text-[22px] sm:text-[28px] lg:text-[34px] font-bold">
+                    <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                      <span className="text-[#06363c] group-hover:scale-110 transition-transform duration-300">{stat.icon}</span>
+                      <span className="text-[#0a0a0a] text-2xl lg:text-3xl font-display font-bold">
                         {stat.number}
                       </span>
                     </div>
-                    <p className="text-[#6b7280] text-[10px] sm:text-[12px] tracking-wide uppercase">
+                    <p className="text-gray-500 text-[11px] tracking-wider uppercase font-semibold">
                       {stat.label}
                     </p>
                   </motion.div>
@@ -495,234 +768,429 @@ export default function ServicesPage() {
               </motion.div>
             </div>
 
-            {/* RIGHT — Hero Image */}
+            {/* RIGHT — Floating Interactive Portal Mockup */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative order-first lg:order-last"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+              className="lg:col-span-6 relative flex justify-center"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#06363c]/5 to-[#7ecfc0]/5 rounded-3xl blur-3xl" />
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200/50">
-                <img
-                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80"
-                  alt="Financial Services Team"
-                  className="w-full h-[220px] sm:h-[300px] md:h-[360px] lg:h-[420px] xl:h-[480px] object-cover"
-                  loading="eager"
-                />
-                <div className="absolute bottom-3 sm:bottom-5 left-3 sm:left-5 right-3 sm:right-auto bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 shadow-lg">
-                  <div className="flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#06363c] text-white flex items-center justify-center shrink-0">
-                      <AiOutlineCheckCircle size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[#0a0a0a] text-[12px] sm:text-[14px] font-bold truncate">
-                        Trusted by 200+ Businesses
-                      </p>
-                      <p className="text-[#6b7280] text-[10px] sm:text-[12px] truncate">
-                        Across India & United States
-                      </p>
-                    </div>
+              <div className="w-full max-w-[520px] bg-white rounded-3xl border border-gray-200/80 shadow-2xl p-6 relative overflow-hidden backdrop-blur-md">
+                
+                {/* Glow behind widget */}
+                <div className="absolute -top-10 -right-10 w-44 h-44 bg-[#7ecfc0]/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-[#dff5b7]/10 rounded-full blur-3xl" />
+
+                {/* Dashboard Header Mock */}
+                <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                    <span className="ml-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">FINLIGEN PORTAL</span>
+                  </div>
+                  <div className="flex bg-gray-100 rounded-full p-0.5 text-[11px] font-semibold">
+                    <button 
+                      onClick={() => setDashboardTab("compliance")}
+                      className={`px-3 py-1 rounded-full transition-all ${dashboardTab === "compliance" ? "bg-white text-[#06363c] shadow-sm" : "text-gray-400 hover:text-gray-600"}`}
+                    >
+                      Compliance
+                    </button>
+                    <button 
+                      onClick={() => setDashboardTab("advisory")}
+                      className={`px-3 py-1 rounded-full transition-all ${dashboardTab === "advisory" ? "bg-white text-[#06363c] shadow-sm" : "text-gray-400 hover:text-gray-600"}`}
+                    >
+                      Advisory
+                    </button>
                   </div>
                 </div>
+
+                {/* Dashboard Body Tabs */}
+                <AnimatePresence mode="wait">
+                  {dashboardTab === "compliance" ? (
+                    <motion.div
+                      key="compliance"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-4"
+                    >
+                      {/* Active Health Circle */}
+                      <div className="flex items-center gap-4 bg-gradient-to-r from-[#06363c] to-[#0c3b42] text-white p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 bottom-0 opacity-10">
+                          <AiOutlineSafety size={120} />
+                        </div>
+                        <div className="w-12 h-12 rounded-full border-4 border-[#7ecfc0]/40 flex items-center justify-center font-bold text-[#7ecfc0] shrink-0 text-sm">
+                          99%
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold">Compliance Score</h4>
+                          <p className="text-xs text-white/70">Delaware LLC & IRS Sales Tax sync active.</p>
+                        </div>
+                      </div>
+
+                      {/* Task Ticker list */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                            <span className="text-xs font-semibold text-gray-700">Q2 Sales Tax Filing (Texas)</span>
+                          </div>
+                          <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full uppercase">FILED</span>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                            <span className="text-xs font-semibold text-gray-700">June Books Finalization</span>
+                          </div>
+                          <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full uppercase">CLOSED</span>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse" />
+                            <span className="text-xs font-semibold text-gray-700">IRS Form 5472 Draft</span>
+                          </div>
+                          <span className="text-[10px] font-bold bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full uppercase">DRAFTING</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="advisory"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-4"
+                    >
+                      {/* Metric widgets */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 hover:shadow-md transition-all">
+                          <LuTrendingUp className="text-[#06363c] mb-2" size={20} />
+                          <div className="text-xs font-semibold text-gray-500">Tax Savings</div>
+                          <div className="text-lg font-bold text-[#06363c]">$18,400</div>
+                          <span className="text-[10px] text-green-600 font-medium">✓ Optimizations applied</span>
+                        </div>
+
+                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 hover:shadow-md transition-all">
+                          <LuDollarSign className="text-[#06363c] mb-2" size={20} />
+                          <div className="text-xs font-semibold text-gray-500">Transfer Pricing</div>
+                          <div className="text-lg font-bold text-[#06363c]">Active</div>
+                          <span className="text-[10px] text-[#06363c] font-medium">India–US setup active</span>
+                        </div>
+                      </div>
+
+                      {/* Advisory insight panel */}
+                      <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200">
+                        <h5 className="text-xs font-bold text-gray-700 mb-1 flex items-center gap-1.5">
+                          <HiOutlineLightBulb size={15} className="text-[#06363c]" />
+                          CFO Advisory Alert
+                        </h5>
+                        <p className="text-[11px] text-gray-500 leading-relaxed">
+                          Your California entity sales have crossed the economic nexus threshold. Safe-harbor state tax registration is recommended to mitigate retroactive audits.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Floating tags */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -bottom-3 -right-2 bg-white px-3.5 py-2.5 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2"
+                >
+                  <span className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="text-[11px] font-bold text-gray-700">Dedicated CA Assigned</span>
+                </motion.div>
+
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  className="absolute -left-3 top-1/3 bg-white px-3.5 py-2.5 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2"
+                >
+                  <span className="text-[#06363c]"><LuSettings className="animate-spin" size={12} /></span>
+                  <span className="text-[11px] font-bold text-gray-700">FEMA Advisory Config</span>
+                </motion.div>
               </div>
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute -top-3 -right-3 w-16 h-16 sm:w-20 sm:h-20 bg-[#7ecfc0]/20 rounded-full blur-2xl"
-              />
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 w-20 h-20 sm:w-24 sm:h-24 bg-[#dff5b7]/20 rounded-full blur-2xl"
-              />
             </motion.div>
           </div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden lg:block"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-[#06363c]/30 rounded-full flex justify-center pt-2"
-          >
-            <div className="w-1.5 h-3 bg-[#06363c]/50 rounded-full" />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 2 — SERVICES CARDS GRID
+          SECTION 2 — INTERACTIVE SERVICES GRID
       ═══════════════════════════════════════════════════════════ */}
-      <section
-        id="services-grid"
-        className="w-full py-12 sm:py-16 lg:py-24 bg-gray-50"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16"
-          >
-            <span className="inline-block text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#06363c]/20 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#06363c]/5">
-              WHAT WE OFFER
+      <section id="services-grid" className="w-full py-20 bg-white border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              OUR CORE SERVICES
             </span>
-            <h2 className="text-[#0a0a0a] text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold leading-[1.12] tracking-tight">
-              Comprehensive Financial
-              <br className="hidden sm:block" />
-              <span className="sm:hidden"> </span>
-              Services Suite
+            <h2 className="text-[28px] sm:text-[38px] lg:text-[46px] font-display font-bold leading-tight text-[#0a0a0a]">
+              Tailored Financial & Compliance Solutions
             </h2>
-            <p className="mt-3 sm:mt-4 text-[#6b7280] text-[13px] sm:text-[15px] md:text-[17px] leading-7 max-w-2xl mx-auto px-2">
-              Six core service lines designed to cover every financial need of
-              businesses operating across India and the United States.
+            <p className="mt-4 text-gray-500 text-base leading-relaxed max-w-2xl mx-auto">
+              We handle back-office operations, setup, and multi-state filings so you can prioritize growth. Explore our core services below.
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.05 }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
-          >
-            {services.map((card, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service, i) => (
               <motion.div
                 key={i}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0 },
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                whileHover={{ y: -8 }}
+                onClick={() => {
+                  setActiveService(i);
+                  const explorerSection = document.getElementById("services-explorer");
+                  if (explorerSection) {
+                    explorerSection.scrollIntoView({ behavior: "smooth" });
+                  }
                 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6, scale: 1.01 }}
-                className="group relative rounded-2xl p-5 sm:p-6 lg:p-7 transition-all duration-300 flex flex-col justify-between bg-white hover:bg-white border border-gray-200/80 hover:border-[#06363c]/20 cursor-pointer hover:shadow-xl hover:shadow-gray-200/50"
-                onClick={() => setActiveService(i)}
+                className="group relative bg-[#FAF9F6] rounded-3xl p-6 border border-gray-200/80 hover:border-[#0c3b42]/30 hover:bg-white hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
-                <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                {/* Visual hover border radial glow */}
+                <div 
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
-                    background: `radial-gradient(circle at 50% 0%,${card.accent}15,transparent 70%)`,
+                    background: `radial-gradient(circle at 50% 0%, ${service.accent}20, transparent 75%)`,
                   }}
                 />
+
                 <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-4 sm:mb-5 gap-2">
-                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                      <div
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shrink-0"
-                        style={{
-                          backgroundColor: `${card.accent}20`,
-                          color: card.color,
-                        }}
-                      >
-                        {card.icon}
-                      </div>
-                      {card.badge && (
-                        <span className="text-[9px] sm:text-[10px] font-semibold tracking-widest uppercase px-2.5 sm:px-3 py-1 rounded-full bg-[#06363c] text-white">
-                          {card.badge}
-                        </span>
-                      )}
-                    </div>
-                    <motion.a
-                      href={card.link}
-                      whileHover={{ x: 3, y: -3 }}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-[#06363c] group-hover:text-white text-gray-500 transition-all duration-300 shrink-0"
-                      onClick={(e) => e.stopPropagation()}
+                  {/* Service Card Header */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+                      style={{
+                        backgroundColor: `${service.accent}20`,
+                        color: service.color,
+                      }}
                     >
-                      <FiArrowUpRight size={16} />
-                    </motion.a>
+                      {service.icon}
+                    </div>
+                    {service.badge && (
+                      <span className="text-[9px] font-bold tracking-wider uppercase bg-[#06363c] text-white px-3 py-1 rounded-full">
+                        {service.badge}
+                      </span>
+                    )}
                   </div>
-                  <h3 className="text-[17px] sm:text-[20px] lg:text-[22px] leading-tight font-semibold mb-2 sm:mb-3 text-[#0a0a0a] group-hover:text-[#06363c] transition-colors duration-300">
-                    {card.title}
+
+                  <h3 className="text-xl font-display font-bold mb-3 text-gray-900 group-hover:text-[#06363c] transition-colors">
+                    {service.title}
                   </h3>
-                  <p className="text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.8] text-[#6b7280]">
-                    {card.shortDesc}
+                  <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                    {service.shortDesc}
                   </p>
                 </div>
-                <div className="relative z-10">
-                  <div className="my-3 sm:my-4 h-[1px] bg-gray-200" />
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    {card.features.slice(0, 3).map((f, fi) => (
-                      <span
-                        key={fi}
-                        className="text-[10px] sm:text-[11px] lg:text-[12px] font-medium px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-gray-200 text-[#4b5563] bg-gray-50 group-hover:border-[#06363c]/20 group-hover:bg-[#06363c]/5 transition-colors duration-300"
+
+                <div className="relative z-10 pt-4 border-t border-gray-200/80">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {service.features.slice(0, 3).map((f, fi) => (
+                      <span 
+                        key={fi} 
+                        className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white border border-gray-200 text-gray-600 group-hover:bg-[#06363c]/5 group-hover:border-[#06363c]/10 transition-colors"
                       >
                         ✓ {f}
                       </span>
                     ))}
-                    {card.features.length > 3 && (
-                      <span className="text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full border border-gray-200 text-[#6b7280] bg-gray-50">
-                        +{card.features.length - 3} more
+                    {service.features.length > 3 && (
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-400">
+                        +{service.features.length - 3} more
                       </span>
                     )}
+                  </div>
+                  <div className="text-xs font-bold text-[#06363c] group-hover:text-[#7ecfc0] flex items-center gap-1.5 transition-colors">
+                    Explore Details
+                    <FiArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </div>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 3 — DETAILED SERVICE EXPLORER
+          SECTION 3 — SERVICE ADVISOR QUIZ
       ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          {/* Heading */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16"
-          >
-            <span className="inline-block text-[#7ecfc0] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#7ecfc0]/30 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#7ecfc0]/5">
-              DEEP DIVE
+      <section id="services-quiz" className="w-full py-20 bg-gray-50 border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-6 lg:px-10">
+          <div className="text-center mb-12">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              COMPLIANCE ADVISOR
             </span>
-            <h2 className="text-[#06363c] text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold leading-[1.12] tracking-tight">
-              Explore Each Service
-              <br className="hidden sm:block" />
-              <span className="sm:hidden"> </span>
-              In Detail
+            <h2 className="text-[28px] sm:text-[36px] font-display font-bold text-gray-900">
+              Not Sure What You Need?
             </h2>
-          </motion.div>
+            <p className="mt-3 text-gray-500 text-sm">
+              Answer two quick questions about your operating setup to instantly see recommended services and actions.
+            </p>
+          </div>
 
-          {/* ── DESKTOP: side-tabs + detail panel (lg+) ── */}
-          <div className="hidden lg:grid lg:grid-cols-12 gap-8">
-            {/* Side Tabs */}
-            <div className="lg:col-span-4 flex flex-col gap-2">
-              {services.map((s, i) => (
-                <motion.button
-                  key={i}
-                  whileHover={{ x: 4 }}
-                  onClick={() => goTo(i)}
-                  className={`flex items-center gap-3 px-5 py-4 rounded-xl text-left transition-all duration-300 ${
-                    activeService === i
-                      ? "bg-[#06363c]/8 border border-[#7ecfc0]/30 text-[#06363c] shadow-md"
-                      : "bg-transparent border border-gray-100 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden min-h-[400px] flex flex-col justify-between">
+            {/* Header bar */}
+            <div className="bg-[#06363c] text-white px-6 py-4 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider">Services Recommender</span>
+              <span className="text-xs font-bold">
+                {quizStep < 2 ? `Question ${quizStep + 1} of 2` : "Recommendations"}
+              </span>
+            </div>
+
+            {/* Quiz Content Container */}
+            <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center">
+              <AnimatePresence mode="wait">
+                {quizStep < 2 ? (
+                  <motion.div
+                    key={quizStep}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
+                    <h3 className="text-lg sm:text-xl font-display font-bold text-gray-950">
+                      {QUIZ_STEPS[quizStep].question}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {QUIZ_STEPS[quizStep].options.map((opt, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleQuizAnswer(opt.value)}
+                          className="text-left p-4 rounded-2xl border border-gray-200 hover:border-[#0c3b42] hover:bg-[#06363c]/5 hover:shadow-md transition-all duration-300"
+                        >
+                          <div className="text-sm font-bold text-[#06363c] mb-1">{opt.label}</div>
+                          <div className="text-xs text-gray-500 leading-normal">{opt.desc}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="space-y-6"
+                  >
+                    <div className="bg-[#7ecfc0]/10 p-5 rounded-2xl border border-[#7ecfc0]/30">
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-[#06363c] mb-2">Recommended Strategy</h4>
+                      <p className="text-xs text-gray-600 leading-relaxed font-body">
+                        {quizResult?.reasoning}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 mb-3">Service Focus Area:</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {quizResult?.recommended.map((serv, index) => (
+                          <div key={index} className="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-200/80">
+                            <div className="w-8 h-8 rounded-lg bg-[#06363c]/15 text-[#06363c] flex items-center justify-center shrink-0">
+                              {React.cloneElement(serv.icon, { size: 18 })}
+                            </div>
+                            <div>
+                              <h5 className="text-xs font-bold text-gray-900">{serv.title}</h5>
+                              <p className="text-[11px] text-gray-500 line-clamp-2 mt-0.5">{serv.shortDesc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 mb-2">Key Action Items to Start:</h4>
+                      <ul className="space-y-2">
+                        {quizResult?.checklist.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2.5 text-xs text-gray-600">
+                            <AiOutlineCheckCircle className="text-[#06363c] mt-0.5 shrink-0" size={14} />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Footer buttons */}
+            <div className="bg-gray-50 border-t border-gray-150 px-6 py-4 flex items-center justify-between">
+              {quizStep > 0 ? (
+                <button
+                  onClick={resetQuiz}
+                  className="text-xs font-bold text-[#06363c] hover:underline"
+                >
+                  Reset / Start Over
+                </button>
+              ) : (
+                <span className="text-[11px] text-gray-400">Select an option to proceed.</span>
+              )}
+              {quizStep === 3 && (
+                <a
+                  href="/contact"
+                  className="bg-[#06363c] hover:bg-[#042024] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg transition"
+                >
+                  Book Advice Call
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 4 — DETAILED SERVICE EXPLORER
+      ═══════════════════════════════════════════════════════════ */}
+      <section id="services-explorer" className="w-full py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              SERVICE EXPLORER
+            </span>
+            <h2 className="text-[28px] sm:text-[38px] font-display font-bold text-gray-900">
+              Deep Dive Into Specific Deliverables
+            </h2>
+            <p className="mt-3 text-gray-500 text-sm">
+              Select a service below to unpack exact scopes, features, and dual-country advantages.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left selector menu */}
+            <div className="lg:col-span-4 flex flex-col gap-2.5">
+              {services.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => goTo(index)}
+                  className={`flex items-center gap-4 px-5 py-4.5 rounded-2xl border text-left transition-all ${
+                    activeService === index
+                      ? "bg-[#06363c]/8 border-[#06363c]/35 text-[#06363c] shadow-md shadow-[#06363c]/5"
+                      : "bg-transparent border-gray-200/80 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                   }`}
                 >
                   <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      activeService === i
-                        ? "bg-[#7ecfc0]/20 text-[#06363c]"
-                        : "bg-gray-100 text-gray-400"
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      activeService === index ? "bg-[#06363c] text-white" : "bg-gray-100 text-gray-400"
                     }`}
                   >
-                    {s.icon}
+                    {React.cloneElement(item.icon, { size: 20 })}
                   </div>
-                  <span className="text-[14px] font-medium">{s.title}</span>
-                </motion.button>
+                  <div>
+                    <h4 className="text-sm font-bold leading-snug">{item.title}</h4>
+                    <span className="text-[10px] font-medium text-gray-400 mt-0.5 block">{item.badge}</span>
+                  </div>
+                </button>
               ))}
             </div>
 
-            {/* Detail Panel */}
+            {/* Right details display card */}
             <div className="lg:col-span-8">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -731,676 +1199,621 @@ export default function ServicesPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.35 }}
-                  className="bg-gray-50 rounded-2xl p-5 sm:p-7 lg:p-9 border border-gray-200"
+                  className="bg-[#FAF9F6] border border-gray-200 rounded-3xl p-6 sm:p-9 relative overflow-hidden"
                 >
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
-                    <div
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0"
-                      style={{
-                        backgroundColor: `${current.accent}20`,
-                        color: current.color,
-                      }}
-                    >
-                      {current.icon}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-[#06363c] text-[20px] sm:text-[24px] lg:text-[28px] font-bold leading-tight">
-                        {current.title}
-                      </h3>
-                      {current.badge && (
-                        <span className="text-[10px] font-semibold tracking-widest uppercase bg-[#7ecfc0]/20 text-[#06363c] px-3 py-1 rounded-full mt-1.5 inline-block">
-                          {current.badge}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <h4 className="text-[#06363c] text-[15px] sm:text-[18px] lg:text-[20px] font-semibold mb-3 sm:mb-4 leading-snug">
-                    {current.headline}
-                  </h4>
-
-                  <p className="text-gray-600 text-[13px] sm:text-[14px] lg:text-[15px] leading-[1.8] mb-6 sm:mb-8">
-                    {current.fullDesc}
-                  </p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7">
-                    <div>
-                      <h4 className="text-[#06363c] text-[14px] sm:text-[16px] lg:text-[18px] font-semibold mb-3 sm:mb-4 flex items-center gap-2">
-                        <HiOutlineLightBulb
-                          className="text-[#7ecfc0]"
-                          size={18}
-                        />
-                        What's Included
-                      </h4>
-                      <ul className="space-y-2.5 sm:space-y-3">
-                        {current.features.map((f, fi) => (
-                          <motion.li
-                            key={fi}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: fi * 0.06 }}
-                            className="flex items-start gap-2.5 text-gray-600 text-[12px] sm:text-[13px] lg:text-[14px]"
-                          >
-                            <AiOutlineCheckCircle
-                              className="text-[#7ecfc0] mt-0.5 flex-shrink-0"
-                              size={15}
-                            />
-                            {f}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-[#06363c] text-[14px] sm:text-[16px] lg:text-[18px] font-semibold mb-3 sm:mb-4 flex items-center gap-2">
-                        <HiOutlineChartBar
-                          className="text-[#7ecfc0]"
-                          size={18}
-                        />
-                        Key Benefits
-                      </h4>
-                      <ul className="space-y-2.5 sm:space-y-3">
-                        {current.benefits.map((b, bi) => (
-                          <motion.li
-                            key={bi}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: bi * 0.06 + 0.25 }}
-                            className="flex items-start gap-2.5"
-                          >
-                            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#06363c]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <FiCheck className="text-[#06363c]" size={11} />
-                            </div>
-                            <span className="text-gray-600 text-[12px] sm:text-[13px] lg:text-[14px]">
-                              {b}
-                            </span>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
-                    <motion.a
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.97 }}
-                      href={current.link}
-                      className="w-full sm:w-auto bg-[#06363c] hover:bg-[#052f35] text-white px-5 sm:px-6 py-3 rounded-xl text-[13px] sm:text-[14px] font-semibold transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      Learn More
-                      <AiOutlineArrowRight size={15} />
-                    </motion.a>
-                    <motion.a
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.97 }}
-                      href="/contact"
-                      className="w-full sm:w-auto border border-[#06363c]/20 hover:border-[#06363c]/50 text-[#06363c] px-5 sm:px-6 py-3 rounded-xl text-[13px] sm:text-[14px] font-medium transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      Get Quote
-                    </motion.a>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* ── MOBILE / TABLET: auto-slide carousel (<lg) ── */}
-          <div className="lg:hidden">
-            {/* Slide Card — NO relative, NO arrows inside */}
-            <div
-              onTouchStart={() => setIsPaused(true)}
-              onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
-            >
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={activeService}
-                  custom={direction}
-                  variants={slideVar}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden"
-                >
-                  {/* Color accent bar */}
-                  <div
-                    className="h-1"
-                    style={{ backgroundColor: current.accent }}
-                  />
-
-                  <div className="p-4 sm:p-6">
-                    {/* Header */}
-                    <div className="flex items-start gap-3 mb-4">
-                      <div
-                        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-gray-250 pb-6">
+                    <div className="flex items-center gap-4">
+                      <div 
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
                         style={{
                           backgroundColor: `${current.accent}20`,
                           color: current.color,
                         }}
                       >
-                        {React.cloneElement(current.icon, { size: 22 })}
+                        {current.icon}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-[#06363c] text-[17px] sm:text-[20px] font-bold leading-tight">
-                            {current.title}
-                          </h3>
-                          <span className="text-gray-400 text-[11px] font-medium shrink-0 mt-0.5">
-                            {activeService + 1}/{services.length}
-                          </span>
-                        </div>
-                        {current.badge && (
-                          <span className="text-[9px] font-semibold tracking-widest uppercase bg-[#06363c] text-white px-2 py-0.5 rounded-full mt-1.5 inline-block">
-                            {current.badge}
-                          </span>
-                        )}
+                      <div>
+                        <span className="text-[10px] font-bold tracking-widest uppercase bg-[#06363c] text-white px-2.5 py-0.5 rounded-full inline-block mb-1">
+                          {current.badge}
+                        </span>
+                        <h3 className="text-xl sm:text-2xl font-display font-bold text-[#06363c]">{current.title}</h3>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Headline */}
-                    <h4
-                      className="text-[14px] sm:text-[16px] font-semibold mb-3 leading-snug"
-                      style={{ color: current.color }}
+                  <h4 className="text-lg font-bold text-gray-900 mb-3 leading-snug">
+                    {current.headline}
+                  </h4>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-8 font-body">
+                    {current.fullDesc}
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Features checklist */}
+                    <div>
+                      <h5 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <HiOutlineLightBulb className="text-[#06363c]" size={18} />
+                        What's Included:
+                      </h5>
+                      <ul className="space-y-3">
+                        {current.features.map((feature, idx) => (
+                          <motion.li
+                            key={idx}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="flex items-start gap-3 text-xs text-gray-600"
+                          >
+                            <AiOutlineCheckCircle className="text-[#7ecfc0] mt-0.5 shrink-0" size={15} />
+                            <span>{feature}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Key Benefits */}
+                    <div>
+                      <h5 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <HiOutlineChartBar className="text-[#06363c]" size={18} />
+                        Key Business Benefits:
+                      </h5>
+                      <ul className="space-y-3">
+                        {current.benefits.map((benefit, idx) => (
+                          <motion.li
+                            key={idx}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05 + 0.15 }}
+                            className="flex items-start gap-3"
+                          >
+                            <div className="w-5 h-5 rounded-full bg-[#06363c]/10 flex items-center justify-center shrink-0 mt-0.5">
+                              <FiCheck className="text-[#06363c]" size={11} />
+                            </div>
+                            <span className="text-xs text-gray-600">{benefit}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Actions inside card */}
+                  <div className="mt-8 pt-6 border-t border-gray-200/80 flex flex-col sm:flex-row gap-3">
+                    <a
+                      href={current.link}
+                      className="bg-[#06363c] hover:bg-[#042024] text-white px-6 py-3 rounded-full text-xs font-bold text-center flex items-center justify-center gap-1.5 transition shadow-lg shadow-[#06363c]/10"
                     >
-                      {current.headline}
-                    </h4>
-
-                    {/* Short description */}
-                    <p className="text-gray-600 text-[12px] sm:text-[14px] leading-[1.7] mb-5">
-                      {current.shortDesc}
-                    </p>
-
-                    {/* Features */}
-                    <div className="mb-4">
-                      <h5 className="text-[12px] sm:text-[13px] font-semibold text-[#06363c] mb-2 flex items-center gap-1.5">
-                        <HiOutlineLightBulb
-                          className="text-[#7ecfc0]"
-                          size={14}
-                        />
-                        What's Included
-                      </h5>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                        {current.features.map((f, fi) => (
-                          <div
-                            key={fi}
-                            className="flex items-center gap-2 text-gray-600 text-[11px] sm:text-[12px] py-0.5"
-                          >
-                            <AiOutlineCheckCircle
-                              className="flex-shrink-0"
-                              style={{ color: current.accent }}
-                              size={13}
-                            />
-                            <span className="truncate">{f}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Benefits */}
-                    <div className="mb-5">
-                      <h5 className="text-[12px] sm:text-[13px] font-semibold text-[#06363c] mb-2 flex items-center gap-1.5">
-                        <HiOutlineChartBar
-                          className="text-[#7ecfc0]"
-                          size={14}
-                        />
-                        Key Benefits
-                      </h5>
-                      <div className="flex flex-wrap gap-1.5">
-                        {current.benefits.map((b, bi) => (
-                          <span
-                            key={bi}
-                            className="text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full border"
-                            style={{
-                              borderColor: `${current.accent}40`,
-                              backgroundColor: `${current.accent}10`,
-                              color: current.color,
-                            }}
-                          >
-                            ✓ {b}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* CTA Buttons */}
-                    <div className="flex gap-2.5">
-                      <a
-                        href={current.link}
-                        className="flex-1 bg-[#06363c] text-white py-2.5 rounded-xl text-[12px] sm:text-[13px] font-semibold flex items-center justify-center gap-1.5"
-                      >
-                        Learn More
-                        <AiOutlineArrowRight size={13} />
-                      </a>
-                      <a
-                        href="/contact"
-                        className="flex-1 border border-[#06363c]/20 text-[#06363c] py-2.5 rounded-xl text-[12px] sm:text-[13px] font-medium flex items-center justify-center"
-                      >
-                        Get Quote
-                      </a>
-                    </div>
+                      View Case Study
+                      <AiOutlineArrowRight size={14} />
+                    </a>
+                    <a
+                      href="/contact"
+                      className="border border-gray-200 hover:border-[#06363c] text-gray-700 hover:text-[#06363c] bg-white px-6 py-3 rounded-full text-xs font-semibold text-center transition"
+                    >
+                      Get Pricing Details
+                    </a>
                   </div>
                 </motion.div>
               </AnimatePresence>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* ── Niche: Prev Arrow — Dots — Next Arrow — Label ── */}
-            <div className="mt-5 flex flex-col items-center gap-3">
-              {/* Row: Arrow + Dots + Arrow */}
-              <div className="flex items-center gap-3">
-                {/* Prev */}
-                <button
-                  onClick={goPrev}
-                  aria-label="Previous service"
-                  className="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-[#06363c] hover:bg-[#06363c] hover:text-white hover:border-[#06363c] transition-all duration-200 active:scale-90"
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 5 — SERVICE PACKAGES & PRICING
+      ═══════════════════════════════════════════════════════════ */}
+      <section id="service-packages" className="w-full py-20 bg-white border-y border-gray-200/80">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              PRICING PLANS
+            </span>
+            <h2 className="text-[28px] sm:text-[38px] lg:text-[46px] font-display font-bold leading-tight text-[#0a0a0a]">
+              Transparent U.S. Formation Packages
+            </h2>
+            <p className="mt-4 text-gray-500 text-sm leading-relaxed max-w-2xl mx-auto font-body">
+              Choose the perfect plan to register and manage your U.S. company. No hidden state fees, no surprises.
+            </p>
+
+            {/* State Selector Dropdown */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                Select Your Formation State:
+              </span>
+              <div className="relative w-full max-w-[320px]">
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  className="w-full bg-[#FAF9F6] border border-gray-200 hover:border-[#06363c]/30 rounded-2xl px-5 py-3.5 text-xs font-bold text-gray-850 outline-none focus:border-[#06363c] focus:ring-2 focus:ring-[#06363c]/10 transition-all appearance-none cursor-pointer shadow-sm pr-10"
                 >
-                  <AiOutlineLeft size={14} />
-                </button>
-
-                {/* Dots */}
-                <div className="flex items-center gap-1.5">
-                  {services.map((s, i) => (
-                    <button
-                      key={i}
-                      onClick={() => goTo(i)}
-                      aria-label={s.title}
-                      className="p-0.5"
-                    >
-                      <div
-                        className={`rounded-full transition-all duration-300 overflow-hidden ${
-                          activeService === i ? "w-8 h-2.5" : "w-2.5 h-2.5"
-                        }`}
-                        style={{
-                          backgroundColor:
-                            activeService === i ? current.accent : "#d1d5db",
-                        }}
-                      >
-                        {activeService === i && (
-                          <div
-                            className="h-full rounded-full"
-                            style={{
-                              width: `${progress}%`,
-                              backgroundColor: current.color,
-                              opacity: 0.35,
-                            }}
-                          />
-                        )}
-                      </div>
-                    </button>
+                  {Object.entries(STATE_FEES).map(([code, details]) => (
+                    <option key={code} value={code}>
+                      {details.name}
+                    </option>
                   ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                  <TbChevronDown size={16} />
                 </div>
-
-                {/* Next */}
-                <button
-                  onClick={goNext}
-                  aria-label="Next service"
-                  className="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-[#06363c] hover:bg-[#06363c] hover:text-white hover:border-[#06363c] transition-all duration-200 active:scale-90"
-                >
-                  <AiOutlineRight size={14} />
-                </button>
               </div>
+            </div>
+          </div>
 
-              {/* Active Label */}
-              <motion.p
-                key={activeService}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-[11px] sm:text-[12px] font-medium text-gray-500 flex items-center gap-1.5"
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: current.accent }}
-                />
-                {current.title}
-              </motion.p>
+          {/* Pricing cards grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            {pricingPackages.map((pkg, idx) => {
+              const stateDetails = STATE_FEES[selectedState] || STATE_FEES.WY;
+              const totalPrice = pkg.basePrice + stateDetails.fee;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className={`relative rounded-3xl p-8 border flex flex-col justify-between transition-all duration-300 ${
+                    pkg.popular
+                      ? "bg-[#06363c] text-white border-[#06363c] shadow-2xl scale-105 z-10 md:-translate-y-4"
+                      : "bg-[#FAF9F6] text-gray-900 border-gray-200/80 hover:border-[#06363c]/30 hover:shadow-xl"
+                  }`}
+                >
+                  {pkg.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#dff5b7] text-[#06363c] text-[10px] font-bold tracking-widest uppercase px-4 py-1 rounded-full shadow-md">
+                      Most Popular
+                    </div>
+                  )}
+
+                  <div>
+                    {/* Header */}
+                    <div className="mb-6">
+                      <h3 className={`text-xl font-display font-bold ${pkg.popular ? "text-white" : "text-gray-900"}`}>
+                        {pkg.name}
+                      </h3>
+                      <p className={`text-xs mt-1.5 leading-relaxed ${pkg.popular ? "text-white/70" : "text-gray-400"}`}>
+                        {pkg.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Price */}
+                    <div className="mb-6">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-display font-extrabold">${totalPrice}</span>
+                        <span className={`text-xs ${pkg.popular ? "text-white/60" : "text-gray-400"}`}>
+                          / total
+                        </span>
+                      </div>
+                      <p className={`text-[11px] mt-1.5 font-medium tracking-wide ${pkg.popular ? "text-[#dff5b7]/90" : "text-[#06363c]"}`}>
+                        Include state tax
+                      </p>
+                    </div>
+
+                    {/* Divider */}
+                    <div className={`h-[1px] w-full my-6 ${pkg.popular ? "bg-white/10" : "bg-gray-250"}`} />
+
+                    {/* Features list */}
+                    <ul className="space-y-3.5 mb-8">
+                      {pkg.features.map((feature, fIdx) => (
+                        <li key={fIdx} className="flex items-start gap-3 text-xs leading-normal">
+                          <FiCheck 
+                            className={`mt-0.5 shrink-0 ${pkg.popular ? "text-[#dff5b7]" : "text-[#06363c]"}`} 
+                            size={14} 
+                          />
+                          <span className={pkg.popular ? "text-white/90" : "text-gray-600"}>
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Button */}
+                  <a
+                    href="/contact"
+                    className={`w-full py-3.5 rounded-xl text-xs font-bold text-center transition-all duration-300 block ${
+                      pkg.popular
+                        ? "bg-[#dff5b7] hover:bg-[#cef0a0] text-[#06363c] shadow-lg shadow-[#dff5b7]/15"
+                        : "border border-[#06363c]/20 hover:border-[#06363c] hover:bg-[#06363c] hover:text-white text-[#06363c]"
+                    }`}
+                  >
+                    {pkg.ctaText}
+                  </a>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Popular Separate Add-ons */}
+          <div className="mt-24 pt-16 border-t border-gray-200/80">
+            <div className="text-center mb-12">
+              <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-3 border border-[#06363c]/15 rounded-full px-3.5 py-1.5 bg-[#06363c]/5">
+                INDIVIDUAL ADD-ONS
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-display font-bold text-gray-900">
+                Popular Separate Add-ons
+              </h3>
+              <p className="mt-3 text-gray-500 text-xs">
+                Need a specific service? Grab any of our services as a standalone add-on.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {separateAddons.map((addon, aIdx) => (
+                <motion.div
+                  key={aIdx}
+                  whileHover={{ y: -4 }}
+                  className="bg-[#FAF9F6] rounded-2xl p-6 border border-gray-200/70 hover:border-[#06363c]/20 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-4 mb-3">
+                      <h4 className="text-sm font-bold text-gray-950">{addon.title}</h4>
+                      <span className="text-xs font-extrabold text-[#06363c] bg-[#06363c]/5 px-2.5 py-1 rounded-full whitespace-nowrap">
+                        {addon.price}
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-gray-500 font-body">
+                      {addon.desc}
+                    </p>
+                  </div>
+                  <div className="mt-5 pt-4 border-t border-gray-200/40">
+                    <a
+                      href="/contact"
+                      className="text-[10px] font-bold text-[#06363c] hover:text-[#7ecfc0] flex items-center gap-1 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Purchase Add-on
+                      <FiArrowUpRight size={12} />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 4 — HOW WE WORK
+          SECTION 6 — INTERACTIVE ROI CALCULATOR
       ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16"
-          >
-            <span className="inline-block text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#06363c]/20 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#06363c]/5">
-              OUR PROCESS
-            </span>
-            <h2 className="text-[#0a0a0a] text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold leading-[1.12] tracking-tight">
-              How We Work
-            </h2>
-            <p className="mt-3 sm:mt-4 text-[#6b7280] text-[13px] sm:text-[15px] md:text-[17px] leading-7 max-w-2xl mx-auto">
-              A simple, transparent four-step process from first call to ongoing
-              delivery.
-            </p>
-          </motion.div>
+      <section className="w-full py-20 bg-gray-50 border-y border-gray-150">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* LEFT — Inputs & Description */}
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+                  ROI CALCULATOR
+                </span>
+                <h2 className="text-[28px] sm:text-[38px] font-display font-bold text-gray-900 leading-tight">
+                  Calculate Your Offshore Cost Savings
+                </h2>
+                <p className="mt-3 text-gray-500 text-sm leading-relaxed">
+                  FinliGen provides top-tier compliance and bookkeeping at a fraction of local US salaries. Adjust the revenue slider to view your estimated savings.
+                </p>
+              </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.05 }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
-          >
-            {processSteps.map((step, i) => (
+              {/* Service Selection */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block">Select Focus Service</label>
+                <div className="relative">
+                  <select
+                    value={calculatorService}
+                    onChange={(e) => setCalculatorService(e.target.value)}
+                    className="w-full bg-white border border-gray-200 hover:border-gray-300 rounded-2xl px-4 py-3 text-xs font-semibold text-gray-700 outline-none focus:border-[#06363c] transition appearance-none cursor-pointer"
+                  >
+                    {services.map((s, idx) => (
+                      <option key={idx} value={s.title}>
+                        {s.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <TbChevronDown size={16} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Slider Input */}
+              <div className="space-y-4 bg-white p-5 rounded-2xl border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Annual US Revenue / Volume</span>
+                  <span className="text-sm font-bold text-[#06363c]">${revenue.toLocaleString()}</span>
+                </div>
+                <input
+                  type="range"
+                  min="50000"
+                  max="5000000"
+                  step="50000"
+                  value={revenue}
+                  onChange={(e) => setRevenue(Number(e.target.value))}
+                  className="w-full accent-[#06363c] cursor-pointer h-1.5 bg-gray-200 rounded-lg appearance-none"
+                />
+                <div className="flex items-center justify-between text-[10px] text-gray-400 font-semibold">
+                  <span>$50,000</span>
+                  <span>$2,500,000</span>
+                  <span>$5,000,000</span>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT — Output comparison card */}
+            <div className="lg:col-span-7 flex justify-center">
+              <div className="w-full max-w-[560px] bg-white rounded-3xl border border-gray-200/80 shadow-2xl p-6 sm:p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#7ecfc0]/5 rounded-full blur-2xl" />
+
+                <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+                  <div className="flex items-center gap-2">
+                    <AiOutlineCalculator className="text-[#06363c]" size={20} />
+                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Savings Breakdown</span>
+                  </div>
+                  <span className="text-xs font-bold text-green-600 uppercase tracking-wider bg-green-50 px-3 py-1 rounded-full">
+                    {calculatedSavings.roiMultiplier}x ROI
+                  </span>
+                </div>
+
+                {/* Graph bars representation */}
+                <div className="space-y-5 mb-8">
+                  {/* Local US Staff cost */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold text-gray-500">In-house US Staff Cost (Estimated)</span>
+                      <span className="font-bold text-gray-800">${calculatedSavings.usCost.toLocaleString()}/yr</span>
+                    </div>
+                    <div className="h-6 w-full bg-gray-100 rounded-lg overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 0.5 }}
+                        className="h-full bg-red-100 border-r-4 border-red-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Finligen Cost */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold text-[#06363c]">FinliGen Outsourcing Cost</span>
+                      <span className="font-bold text-[#06363c]">${calculatedSavings.finligenCost.toLocaleString()}/yr</span>
+                    </div>
+                    <div className="h-6 w-full bg-gray-100 rounded-lg overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: "35%" }}
+                        transition={{ duration: 0.5 }}
+                        className="h-full bg-[#7ecfc0]/40 border-r-4 border-[#06363c]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Net Savings spotlight */}
+                <div className="bg-[#06363c] text-white p-5 rounded-2xl relative overflow-hidden">
+                  <div className="absolute right-0 bottom-0 translate-y-6 opacity-5 pointer-events-none">
+                    <LuDollarSign size={140} />
+                  </div>
+
+                  <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7ecfc0]">Estimated Net Savings</span>
+                      <div className="text-3xl sm:text-4xl font-display font-bold mt-1 text-[#dff5b7]">
+                        ${calculatedSavings.annualSavings.toLocaleString()}
+                      </div>
+                      <p className="text-[11px] text-white/70 mt-1">Or roughly ${calculatedSavings.monthlySavings.toLocaleString()}/month saved.</p>
+                    </div>
+
+                    <a
+                      href="/contact"
+                      className="bg-[#dff5b7] hover:bg-[#cef0a0] text-[#06363c] px-6 py-3 rounded-full text-xs font-bold text-center transition whitespace-nowrap"
+                    >
+                      Claim Savings
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 7 — PROCESS STEPS
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="w-full py-20 bg-[#FAF9F6] border-b border-gray-200/80">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              OUR STEP-BY-STEP PROCESS
+            </span>
+            <h2 className="text-[28px] sm:text-[38px] font-display font-bold text-gray-900 leading-tight">
+              A Seamless Delivery Pipeline
+            </h2>
+            <p className="mt-3 text-gray-500 text-sm">
+              We've refined onboarding down to an exact, zero-friction science.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+            {processSteps.map((step, idx) => (
               <motion.div
-                key={i}
-                variants={fadeUp}
-                transition={{ duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="relative group bg-white rounded-2xl p-5 sm:p-6 lg:p-7 border border-gray-200 hover:border-[#06363c]/30 hover:shadow-xl transition-all duration-300"
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -6 }}
+                className="bg-[#FAF9F6] border border-gray-200 rounded-3xl p-6 relative overflow-hidden group hover:border-[#06363c]/30 hover:bg-white hover:shadow-xl transition-all duration-300"
               >
-                <div className="text-[40px] sm:text-[48px] lg:text-[56px] font-black text-gray-100 group-hover:text-[#06363c]/10 transition-colors duration-300 absolute top-3 sm:top-4 right-4 sm:right-5 leading-none">
+                {/* Large step number background */}
+                <div className="absolute top-2 right-4 text-5xl font-black text-gray-200/50 group-hover:text-[#06363c]/5 transition-colors leading-none pointer-events-none select-none">
                   {step.step}
                 </div>
+
                 <div className="relative z-10">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#06363c]/10 text-[#06363c] flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-[#06363c] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                  <div className="w-11 h-11 rounded-2xl bg-[#06363c]/10 text-[#06363c] flex items-center justify-center mb-5 group-hover:bg-[#06363c] group-hover:text-white transition-all duration-300">
                     {step.icon}
                   </div>
-                  <h3 className="text-[#0a0a0a] text-[16px] sm:text-[18px] lg:text-[20px] font-semibold mb-2 sm:mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-[#6b7280] text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.8]">
+                  <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <p className="text-xs text-gray-500 leading-relaxed font-body">
                     {step.desc}
                   </p>
                 </div>
-                {i < processSteps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-[2px] bg-[#06363c]/15" />
-                )}
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 5 — WHY CHOOSE US
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start lg:items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.8 }}
-            >
-              <span className="inline-block text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#06363c]/20 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#06363c]/5">
-                WHY FINLIGEN
-              </span>
-              <h2 className="text-[#0a0a0a] text-[24px] sm:text-[32px] md:text-[38px] lg:text-[46px] font-bold leading-[1.12] tracking-tight mb-4 sm:mb-6">
-                Built for India–US
-                <br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>
-                Business Corridors
-              </h2>
-              <p className="text-[#6b7280] text-[13px] sm:text-[15px] md:text-[17px] leading-[1.8] mb-6 sm:mb-8">
-                We're not a generic outsourcing firm. Our team specializes
-                exclusively in the India–US business corridor, combining deep
-                expertise in both countries' tax systems, regulations, and
-                business practices.
-              </p>
-              <div className="space-y-3 sm:space-y-4">
-                {[
-                  {
-                    icon: <AiOutlineSafety size={18} />,
-                    title: "Dual-Country Expertise",
-                    desc: "CAs and CPAs who understand both Indian and US tax systems.",
-                  },
-                  {
-                    icon: <AiOutlineClockCircle size={18} />,
-                    title: "Timezone-Aligned Delivery",
-                    desc: "Work happens while you sleep — deliverables ready when you start.",
-                  },
-                  {
-                    icon: <AiOutlineDollar size={18} />,
-                    title: "Fixed Monthly Pricing",
-                    desc: "No hourly billing surprises. Know exactly what you pay.",
-                  },
-                  {
-                    icon: <AiOutlineTeam size={18} />,
-                    title: "Dedicated Team Model",
-                    desc: "Same people on your account every month — consistency you can rely on.",
-                  },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: false }}
-                    transition={{ delay: i * 0.08 }}
-                    className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl hover:bg-gray-50 transition-colors duration-300 border border-transparent hover:border-gray-200"
-                  >
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#06363c]/10 text-[#06363c] flex items-center justify-center flex-shrink-0">
-                      {item.icon}
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-[#0a0a0a] text-[14px] sm:text-[15px] lg:text-[16px] font-semibold mb-0.5 sm:mb-1">
-                        {item.title}
-                      </h4>
-                      <p className="text-[#6b7280] text-[12px] sm:text-[13px] lg:text-[14px] leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#06363c]/5 to-[#7ecfc0]/5 rounded-3xl blur-2xl" />
-              <div className="relative bg-gray-50 rounded-2xl p-5 sm:p-7 lg:p-8 border border-gray-200 shadow-xl">
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-6">
-                  {[
-                    {
-                      label: "Client Retention",
-                      value: "96%",
-                      color: "#06363c",
-                    },
-                    {
-                      label: "Avg Response Time",
-                      value: "<2hrs",
-                      color: "#1a5c3a",
-                    },
-                    {
-                      label: "Tax Savings",
-                      value: "$2.4M+",
-                      color: "#2a4a7f",
-                    },
-                    {
-                      label: "Team Members",
-                      value: "45+",
-                      color: "#7a4f1a",
-                    },
-                  ].map((s, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: false }}
-                      transition={{ delay: 0.3 + i * 0.08 }}
-                      className="bg-white rounded-xl p-3 sm:p-4 text-center border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all duration-300"
-                    >
-                      <div
-                        className="text-[20px] sm:text-[24px] lg:text-[26px] font-bold mb-1"
-                        style={{ color: s.color }}
-                      >
-                        {s.value}
-                      </div>
-                      <div className="text-[#6b7280] text-[9px] sm:text-[11px] lg:text-[12px] uppercase tracking-wider">
-                        {s.label}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                  {[
-                    "SOC 2 Compliant",
-                    "NDA Protected",
-                    "CA Reviewed",
-                    "ISO 27001",
-                  ].map((badge, i) => (
-                    <span
-                      key={i}
-                      className="text-[9px] sm:text-[10px] lg:text-[11px] font-medium px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#06363c]/15 text-[#06363c] bg-[#06363c]/5"
-                    >
-                      ✓ {badge}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 6 — TESTIMONIALS
+          SECTION 8 — SEARCHABLE FAQ ACCORDION
       ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16"
-          >
-            <span className="inline-block text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#06363c]/20 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#06363c]/5">
-              CLIENT STORIES
+      <section className="w-full py-20 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-6 lg:px-10">
+          
+          <div className="text-center mb-12">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              FAQ RESOURCE
             </span>
-            <h2 className="text-[#0a0a0a] text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold leading-[1.12] tracking-tight">
-              Trusted by Growing
-              <br className="hidden sm:block" />
-              <span className="sm:hidden"> </span>
-              Businesses
+            <h2 className="text-[28px] sm:text-[38px] font-display font-bold text-gray-900 leading-tight">
+              Frequently Answered Questions
             </h2>
-          </motion.div>
+            <p className="mt-3 text-gray-500 text-sm">
+              Instantly search or filter our compliance index for fast tax answers.
+            </p>
+          </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.05 }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
-          >
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                transition={{ duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl p-5 sm:p-6 lg:p-7 border border-gray-200 hover:border-[#06363c]/20 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex gap-1 mb-3 sm:mb-4">
-                    {Array.from({ length: t.rating }).map((_, si) => (
-                      <AiOutlineStar
-                        key={si}
-                        className="text-[#f0c27f]"
-                        size={14}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-[#4b5563] text-[13px] sm:text-[14px] lg:text-[15px] leading-[1.8] mb-5 sm:mb-6 italic">
-                    "{t.text}"
-                  </p>
+          {/* Interactive Search & Categories bar */}
+          <div className="space-y-4 mb-8">
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Search input */}
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search tax rules, entities, pricing models..."
+                  value={faqSearch}
+                  onChange={(e) => setFaqSearch(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-2xl py-3.5 pl-11 pr-4 text-xs font-medium outline-none focus:border-[#06363c] focus:ring-1 focus:ring-[#06363c] transition shadow-sm"
+                />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  <FiSearch size={16} />
                 </div>
-                <div className="flex items-center gap-3 pt-3 sm:pt-4 border-t border-gray-200">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#06363c] text-white flex items-center justify-center text-[14px] sm:text-[16px] font-bold shrink-0">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[#0a0a0a] text-[13px] sm:text-[14px] font-semibold truncate">
-                      {t.name}
-                    </p>
-                    <p className="text-[#6b7280] text-[11px] sm:text-[12px] truncate">
-                      {t.role}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+              </div>
+            </div>
 
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 7 — FAQ
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-10 sm:mb-14 lg:mb-16"
-          >
-            <span className="inline-block text-[#06363c] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#06363c]/20 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-[#06363c]/5">
-              FAQ
-            </span>
-            <h2 className="text-[#0a0a0a] text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold leading-[1.12] tracking-tight">
-              Common Questions
-            </h2>
-          </motion.div>
-
-          <div className="space-y-2.5 sm:space-y-3 lg:space-y-4">
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.06 }}
-                className="bg-gray-50 rounded-xl border border-gray-200 hover:border-[#06363c]/20 hover:shadow-lg transition-all duration-300 overflow-hidden"
-              >
+            {/* Categorization tabs */}
+            <div className="flex flex-wrap gap-1.5 pb-2">
+              {categories.map((cat, idx) => (
                 <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-4 sm:p-5 lg:p-6 text-left gap-3 min-h-[56px]"
+                  key={idx}
+                  onClick={() => setFaqCategory(cat)}
+                  className={`text-[10px] font-bold px-3.5 py-1.5 rounded-full transition-all ${
+                    faqCategory === cat
+                      ? "bg-[#06363c] text-white"
+                      : "bg-white text-gray-500 border border-gray-200 hover:border-gray-300"
+                  }`}
                 >
-                  <span className="text-[#0a0a0a] text-[13px] sm:text-[14px] lg:text-[16px] font-medium pr-2 leading-snug">
-                    {faq.q}
-                  </span>
-                  <div
-                    className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gray-200 flex items-center justify-center text-[#06363c] transition-transform duration-300"
-                    style={{
-                      transform:
-                        openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
-                  >
-                    <TbChevronDown size={16} />
-                  </div>
+                  {cat}
                 </button>
-                <AnimatePresence>
-                  {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
+              ))}
+            </div>
+          </div>
+
+          {/* FAQs List */}
+          <div className="space-y-3 min-h-[150px]">
+            <AnimatePresence>
+              {filteredFaqs.length > 0 ? (
+                filteredFaqs.map((faq, i) => (
+                  <motion.div
+                    key={faq.q}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-[#0c3b42]/20 hover:shadow-md transition-all duration-300"
+                  >
+                    <button
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      className="w-full flex items-center justify-between p-5 text-left gap-4"
                     >
-                      <div className="px-4 sm:px-5 lg:px-6 pb-4 sm:pb-5 lg:pb-6 pt-0">
-                        <div className="h-[1px] bg-gray-200 mb-3 sm:mb-4" />
-                        <p className="text-[#6b7280] text-[12px] sm:text-[13px] lg:text-[15px] leading-[1.8]">
+                      <span className="text-gray-900 text-sm font-bold pr-2 leading-snug">
+                        {faq.q}
+                      </span>
+                      <div
+                        className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-[#06363c] shrink-0 transition-transform duration-300"
+                        style={{
+                          transform: openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
+                        }}
+                      >
+                        <TbChevronDown size={16} />
+                      </div>
+                    </button>
+                    
+                    {openFaq === i && (
+                      <div className="px-5 pb-5 pt-0">
+                        <div className="h-[1px] bg-gray-100 mb-4" />
+                        <p className="text-gray-500 text-xs sm:text-sm leading-relaxed font-body">
                           {faq.a}
                         </p>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </motion.div>
+                ))
+              ) : (
+                <div className="text-center py-10 bg-white border border-gray-250/60 rounded-3xl text-gray-400 text-xs font-semibold flex flex-col items-center gap-2">
+                  <FiHelpCircle size={26} className="text-gray-300" />
+                  No compliance matches found. Try typing another keyword.
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 9 — TESTIMONIALS Carousel
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="w-full py-20 bg-[#FAF9F6] border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block text-[#06363c] text-xs tracking-[0.15em] font-bold uppercase mb-4 border border-[#06363c]/20 rounded-full px-4 py-1.5 bg-[#06363c]/5">
+              CLIENT TESTIMONIALS
+            </span>
+            <h2 className="text-[28px] sm:text-[38px] font-display font-bold text-gray-900 leading-tight">
+              Endorsed by Global Brands
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((t, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                whileHover={{ y: -5 }}
+                className="bg-[#FAF9F6] border border-gray-200/80 rounded-3xl p-6 flex flex-col justify-between hover:border-[#06363c]/20 hover:bg-white hover:shadow-xl transition-all duration-300"
+              >
+                <div>
+                  <div className="flex gap-0.5 mb-4 text-[#f0c27f]">
+                    {Array.from({ length: t.rating }).map((_, si) => (
+                      <AiOutlineStar key={si} size={15} />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-6 italic font-body">
+                    "{t.text}"
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-200/85">
+                  <div className="w-9 h-9 rounded-full bg-[#06363c] text-white flex items-center justify-center text-xs font-bold font-display shrink-0">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-gray-950">{t.name}</h5>
+                    <p className="text-[10px] text-gray-400 font-semibold">{t.role}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -1408,79 +1821,68 @@ export default function ServicesPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 8 — FINAL CTA
+          SECTION 10 — FINAL CTA SECTION
       ═══════════════════════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10">
+      <section className="w-full py-20 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-10">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative rounded-2xl sm:rounded-3xl overflow-hidden"
+            className="relative bg-gradient-to-br from-[#06363c] to-[#041f23] rounded-3xl overflow-hidden shadow-2xl p-8 sm:p-14 text-center text-white"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#06363c] to-[#052f35]" />
-            <div className="absolute top-0 right-0 w-40 sm:w-60 lg:w-80 h-40 sm:h-60 lg:h-80 bg-[#7ecfc0]/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-60 h-32 sm:h-48 lg:h-60 bg-[#dff5b7]/8 rounded-full blur-3xl" />
+            {/* Ambient glows inside card */}
+            <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#7ecfc0]/10 rounded-full blur-[80px]" />
+            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#dff5b7]/5 rounded-full blur-[80px]" />
 
-            <div className="relative z-10 p-6 sm:p-10 lg:p-14 xl:p-16 text-center">
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: false }}
-                transition={{ delay: 0.2 }}
-                className="inline-block text-[#7ecfc0] text-[10px] sm:text-[12px] tracking-[0.18em] font-semibold uppercase mb-3 sm:mb-4 border border-[#7ecfc0]/30 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 bg-white/5"
-              >
-                GET STARTED
-              </motion.span>
+            <div className="relative z-10 space-y-6">
+              <span className="inline-block text-[#7ecfc0] text-[10px] font-bold tracking-[0.2em] uppercase border border-[#7ecfc0]/30 rounded-full px-4 py-1.5 bg-white/5">
+                ONBOARDING
+              </span>
 
-              <h2 className="text-white text-[22px] sm:text-[30px] md:text-[38px] lg:text-[46px] font-bold leading-[1.12] tracking-tight mb-4 sm:mb-5">
-                Ready to Simplify Your
-                <br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>
-                Finance Operations?
+              <h2 className="text-2xl sm:text-4xl lg:text-5.5xl font-display font-bold leading-tight">
+                Ready to Automate Your Compliance?
               </h2>
 
-              <p className="text-[#b5c7c8] text-[13px] sm:text-[15px] md:text-[17px] leading-[1.7] max-w-2xl mx-auto mb-6 sm:mb-8 lg:mb-10 px-2">
-                Book a free 30-minute consultation with our team. We'll
-                understand your needs and recommend the right service package —
-                no obligation, no pressure.
+              <p className="text-[#b5c7c8] text-xs sm:text-base leading-relaxed max-w-xl mx-auto font-body">
+                Let's plan your multi-state nexus analysis or monthly bookkeeping workflow. Book a consultation with a senior CPA today.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <motion.a
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   href="/contact"
-                  className="w-full sm:w-auto bg-[#dff5b7] hover:bg-[#cef0a0] text-[#052f35] px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-xl text-[13px] sm:text-[15px] lg:text-[17px] font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-xl shadow-[#dff5b7]/20"
+                  className="w-full sm:w-auto bg-[#dff5b7] hover:bg-[#cef0a0] text-[#052f35] px-8 py-3.5 rounded-full text-sm font-bold shadow-xl transition duration-300 flex items-center justify-center gap-2"
                 >
                   Book Free Consultation
-                  <AiOutlineArrowRight size={18} />
+                  <AiOutlineArrowRight size={16} />
                 </motion.a>
 
                 <motion.a
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   href="mailto:hello@finligen.com"
-                  className="w-full sm:w-auto border border-white/20 hover:border-white/50 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-xl text-[13px] sm:text-[15px] lg:text-[17px] font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto border border-white/20 hover:border-white/40 text-white px-8 py-3.5 rounded-full text-sm font-semibold transition duration-300 flex items-center justify-center gap-2"
                 >
-                  <AiOutlineMail size={18} />
-                  Email Us
+                  <AiOutlineMail size={16} />
+                  Email CPA Office
                 </motion.a>
               </div>
 
-              <div className="mt-6 sm:mt-8 lg:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 lg:gap-8 text-[#b5c7c8] text-[11px] sm:text-[13px] lg:text-[14px]">
-                <span className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-8 text-[11px] text-[#b5c7c8] font-medium border-t border-white/10 mt-8">
+                <span className="flex items-center gap-1.5">
                   <AiOutlineCheckCircle className="text-[#7ecfc0]" size={14} />
-                  No commitment required
+                  Zero onboarding setup fees
                 </span>
-                <span className="flex items-center gap-1.5 sm:gap-2">
+                <span className="flex items-center gap-1.5">
                   <AiOutlineCheckCircle className="text-[#7ecfc0]" size={14} />
-                  Response within 24 hours
+                  NDA-protected secure pipeline
                 </span>
-                <span className="flex items-center gap-1.5 sm:gap-2">
+                <span className="flex items-center gap-1.5">
                   <AiOutlineCheckCircle className="text-[#7ecfc0]" size={14} />
-                  100% confidential
+                  CAs assigned within 48 hours
                 </span>
               </div>
             </div>
