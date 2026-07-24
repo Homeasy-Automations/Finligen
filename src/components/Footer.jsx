@@ -245,12 +245,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 sm:gap-16">
 
           {/* Company */}
-          <div>
-            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+          <div className="flex flex-col justify-between md:min-h-[210px]">
+            <h3 className="text-black text-[16px] font-semibold uppercase tracking-wider text-xs">
               Company
             </h3>
 
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               <li>
                 <Link
                   to="/about"
@@ -290,12 +290,12 @@ const Footer = () => {
           </div>
 
           {/* Services */}
-          <div>
-            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+          <div className="flex flex-col justify-between md:min-h-[210px]">
+            <h3 className="text-black text-[16px] font-semibold uppercase tracking-wider text-xs">
               Services
             </h3>
 
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               <li>
                 <Link
                   to="/services"
@@ -335,12 +335,12 @@ const Footer = () => {
           </div>
 
           {/* Resources */}
-          <div>
-            <h3 className="text-black text-[16px] font-semibold mb-5 uppercase tracking-wider text-xs">
+          <div className="flex flex-col justify-between md:min-h-[210px]">
+            <h3 className="text-black text-[16px] font-semibold uppercase tracking-wider text-xs">
               Resources
             </h3>
 
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               <li>
                 <Link
                   to="/blog"
@@ -379,48 +379,49 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Brand & Contact Column */}
-          <div className="flex flex-col items-start gap-4">
-            <h1 className="text-[38px] sm:text-[42px] font-semibold leading-none tracking-tight text-[#0d4b52]">
-              FINLIGEN
-            </h1>
+          {/* Brand Column */}
+          <div className="flex flex-col justify-between md:min-h-[210px]">
+            <div>
+              <h1 className="text-[34px] sm:text-[38px] font-semibold leading-none tracking-tight text-[#0d4b52]">
+                FINLIGEN
+              </h1>
+              <p className="text-gray-500 text-[13px] leading-5 max-w-[280px] mt-3">
+                CA-led tax, bookkeeping, and U.S. compliance solutions for cross-border startups and CPA firms.
+              </p>
+            </div>
 
-            <p className="text-gray-500 text-[14px] leading-6 max-w-[280px]">
-              CA-led tax, bookkeeping, and U.S. compliance solutions for cross-border startups and CPA firms.
-            </p>
-
-            <div className="space-y-2 mt-2">
-              <h3 className="text-black text-[15px] font-semibold">
+            <div className="space-y-2 mt-4">
+              <h3 className="text-black text-[14px] font-semibold">
                 Get In Touch
               </h3>
 
               <a
                 href="mailto:hello@finligen.com"
-                className="text-gray-500 hover:text-black transition text-[14px] block"
+                className="text-gray-500 hover:text-black transition text-[13px] block"
               >
                 hello@finligen.com
               </a>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-1">
                 <Link
                   to="#"
-                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
+                  className="w-8 h-8 rounded-full border border-gray-200 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <AiOutlineLinkedin size={16} />
+                  <AiOutlineLinkedin size={15} />
                 </Link>
 
                 <Link
                   to="#"
-                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
+                  className="w-8 h-8 rounded-full border border-gray-200 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <FaYoutube size={16} />
+                  <FaYoutube size={15} />
                 </Link>
 
                 <Link
                   to="#"
-                  className="w-9 h-9 rounded-full border border-gray-300 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
+                  className="w-8 h-8 rounded-full border border-gray-200 hover:bg-black hover:text-white text-gray-500 flex items-center justify-center transition"
                 >
-                  <FaFacebook size={16} />
+                  <FaFacebook size={15} />
                 </Link>
               </div>
             </div>
@@ -428,7 +429,7 @@ const Footer = () => {
         </div>
 
         {/* BOTTOM */}
-        <div className="border-t border-gray-200 mt-6 pt-3 flex flex-col md:flex-row items-center justify-between gap-5">
+        <div className="border-t border-gray-200 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-6">
 
           <p className="text-gray-400 text-[14px]">
             © 2024 Finligen, All rights reserved
