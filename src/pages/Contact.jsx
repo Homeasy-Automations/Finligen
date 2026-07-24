@@ -841,7 +841,7 @@ export default function ContactPage() {
               {
                 city: "Gurgaon",
                 address: "456 Tech Tower, Golf Course Road",
-                postal: "Gurgaon 122002",
+                postal: "Gurgaon 122001",
                 color: tokens.accent,
               },
               {
